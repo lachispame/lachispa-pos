@@ -6,6 +6,7 @@ import '../core/services/export_service.dart';
 import '../providers/auth_provider.dart';
 import '../providers/cart_provider.dart';
 import '../providers/sales_provider.dart';
+import '../providers/product_provider.dart';
 import '../widgets/app_drawer.dart';
 
 class HomeDependienteScreen extends StatefulWidget {
@@ -127,6 +128,55 @@ class _HomeDependienteScreenState extends State<HomeDependienteScreen> {
     );
   }
 
+  Future<void> _importarCatalogo() async {
+    final l10n = AppLocalizations.of(context)!;
+    final productProvider = context.read<ProductProvider>();
+
+    final data = await productProvider.pickCatalogJson();
+    if (data == null) return;
+
+    final productos = data['productos'] as List<dynamic>?;
+    if (productos == null || productos.isEmpty) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Archivo de catálogo inválido'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+      return;
+    }
+
+    if (mounted) {
+      final confirmed = await showDialog<bool>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          backgroundColor: AppTheme.cardColor,
+          title: const Text('Importar Catálogo'),
+          content: Text('¿Importar ${productos.length} productos?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: Text(l10n.cancel_button),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              child: Text(l10n.import_button),
+            ),
+          ],
+        ),
+      );
+
+      if (confirmed == true && mounted) {
+        final imported = await productProvider.importCatalogFromJson(data);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('$imported productos importados')),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -168,10 +218,24 @@ class _HomeDependienteScreenState extends State<HomeDependienteScreen> {
             ),
             const SizedBox(height: 12),
             _MenuCard(
+              icon: Icons.bar_chart,
+              title: 'ESTADÍSTICAS',
+              subtitle: 'Ventas, gráficos y top productos',
+              onTap: () => Navigator.pushNamed(context, '/stats'),
+            ),
+            const SizedBox(height: 12),
+            _MenuCard(
               icon: Icons.file_download,
               title: l10n.export_sales,
               subtitle: l10n.import_sales_subtitle,
               onTap: _exportar,
+            ),
+            const SizedBox(height: 12),
+            _MenuCard(
+              icon: Icons.inventory_2,
+              title: 'IMPORTAR CATÁLOGO',
+              subtitle: 'Productos del jefe',
+              onTap: _importarCatalogo,
             ),
             const SizedBox(height: 12),
             _MenuCard(

@@ -420,26 +420,307 @@ class AppLocalizationsRu extends AppLocalizations {
   String get discard_confirm => 'Удалить все импортированные продажи?';
 
   @override
-  String get pay_with_nfc => 'Pagar con NFC';
+  String get pay_with_nfc => 'Оплатить через NFC';
 
   @override
-  String get nfc_not_available => 'NFC no disponible';
+  String get nfc_not_available => 'NFC недоступен';
 
   @override
-  String get nfc_ready => 'Acerque el dispositivo al cliente';
+  String get nfc_ready => 'Поднесите устройство к клиенту';
 
   @override
-  String get nfc_payment_cancelled => 'Pago NFC cancelado';
+  String get nfc_payment_cancelled => 'Оплата NFC отменена';
 
   @override
-  String get nfc_error => 'Error NFC';
+  String get nfc_error => 'Ошибка NFC';
 
   @override
-  String get tap_to_pay => 'Tocar para pagar';
+  String get tap_to_pay => 'Нажмите для оплаты';
 
   @override
-  String get nfc_reading => 'Leyendo NFC...';
+  String get nfc_reading => 'Чтение NFC...';
 
   @override
-  String get lnurl_error => 'Error del servidor';
+  String get lnurl_error => 'Ошибка сервера';
+
+  @override
+  String get drawer_stats => 'СТАТИСТИКА';
+
+  @override
+  String get drawer_stats_subtitle => 'Продажи, графики и топ товаров';
+
+  @override
+  String get drawer_catalog => 'КАТАЛОГ';
+
+  @override
+  String get drawer_catalog_subtitle => 'Управление товарами';
+
+  @override
+  String get drawer_import_sales => 'ИМПОРТ ПРОДАЖ';
+
+  @override
+  String get drawer_import_sales_subtitle => 'Импорт продаж от сотрудников';
+
+  @override
+  String get drawer_export_sales => 'ЭКСПОРТ ПРОДАЖ';
+
+  @override
+  String get drawer_export_sales_subtitle => 'Экспорт продаж в JSON';
+
+  @override
+  String get drawer_import_catalog => 'ИМПОРТ КАТАЛОГА';
+
+  @override
+  String get drawer_import_catalog_subtitle => 'Товары начальника';
+
+  @override
+  String get drawer_delete_imported_subtitle =>
+      'Удалить импортированные продажи';
+
+  @override
+  String get drawer_logout => 'Выйти';
+
+  @override
+  String get catalog_title => 'Каталог товаров';
+
+  @override
+  String get catalog_new_product => 'Новый товар';
+
+  @override
+  String get catalog_edit_product => 'Редактировать товар';
+
+  @override
+  String get catalog_product_name_label => 'Название';
+
+  @override
+  String get catalog_product_name_hint => 'Название товара';
+
+  @override
+  String get catalog_product_price_label => 'Цена';
+
+  @override
+  String get catalog_product_currency_label => 'Валюта';
+
+  @override
+  String get catalog_category_label => 'Категория (необязательно)';
+
+  @override
+  String get catalog_category_hint => 'Напр.: Напитки, Еда';
+
+  @override
+  String get catalog_save => 'Сохранить';
+
+  @override
+  String get catalog_add => 'Добавить';
+
+  @override
+  String get catalog_delete_title => 'Удалить товар';
+
+  @override
+  String catalog_delete_confirm(Object productName) {
+    return 'Удалить \"$productName\"?';
+  }
+
+  @override
+  String get catalog_export_tooltip => 'Экспорт каталога';
+
+  @override
+  String get catalog_no_products => 'Нет товаров';
+
+  @override
+  String get catalog_add_first => 'Добавить первый товар';
+
+  @override
+  String get catalog_import_title => 'Импорт каталога';
+
+  @override
+  String catalog_import_confirm(Object count) {
+    return 'Импортировать $count товаров?';
+  }
+
+  @override
+  String catalog_imported(Object count) {
+    return 'Импортировано $count товаров';
+  }
+
+  @override
+  String get catalog_invalid_file => 'Неверный файл каталога';
+
+  @override
+  String get receipt_title => 'Чек';
+
+  @override
+  String get receipt_brand => 'LA CHISPA';
+
+  @override
+  String get receipt_subtitle => 'Lightning POS';
+
+  @override
+  String get receipt_employee => 'Сотрудник';
+
+  @override
+  String get receipt_date => 'Дата';
+
+  @override
+  String get receipt_total => 'ИТОГО';
+
+  @override
+  String get receipt_sats => 'сат';
+
+  @override
+  String get receipt_thanks => 'Спасибо за покупку!';
+
+  @override
+  String get receipt_website => 'lachispa.me';
+
+  @override
+  String get receipt_share => 'Поделиться чеком';
+
+  @override
+  String get receipt_new_sale => 'Новая продажа';
+
+  @override
+  String get receipt_share_tooltip => 'Поделиться';
+
+  @override
+  String get currency_mismatch_title => 'Разные валюты';
+
+  @override
+  String currency_mismatch_message(Object currency) {
+    return 'Нельзя смешивать валюты в одной продаже. Текущая продажа в $currency. Завершите или отмените продажу чтобы сменить валюту.';
+  }
+
+  @override
+  String get got_it => 'Понятно';
+
+  @override
+  String get manual_entry_tooltip => 'Ручной ввод';
+
+  @override
+  String get catalog_mode_tooltip => 'Каталог';
+
+  @override
+  String get search_products_hint => 'Поиск товаров...';
+
+  @override
+  String no_results_in_currency(Object currency) {
+    return 'Нет результатов в $currency';
+  }
+
+  @override
+  String no_products_in_currency(Object currency) {
+    return 'Нет товаров в $currency';
+  }
+
+  @override
+  String get try_other_currency => 'Попробуйте другую валюту';
+
+  @override
+  String get product_label => 'Товар';
+
+  @override
+  String get name_hint => 'Название';
+
+  @override
+  String get price_label => 'Цена';
+
+  @override
+  String get add_products_hint => 'Добавьте товары';
+
+  @override
+  String invoice_memo(Object userName) {
+    return 'POS продажа - $userName';
+  }
+
+  @override
+  String get settings_manual_entry => 'Или введите вручную:';
+
+  @override
+  String get settings_url_label => 'URL';
+
+  @override
+  String get settings_url_hint =>
+      'https://lachispa.me или http://192.168.1.x:5000';
+
+  @override
+  String get settings_api_key_label => 'API ключ';
+
+  @override
+  String get settings_ticket_section => 'Чек';
+
+  @override
+  String get settings_ticket_description =>
+      'После каждой продажи вы можете поделиться чеком как текстом. Поддержка термопринтера будет добавлена позже.';
+
+  @override
+  String get stats_title => 'Статистика';
+
+  @override
+  String get stats_last_7_days => 'Продажи за 7 дней';
+
+  @override
+  String get stats_top_products => 'Топ товаров';
+
+  @override
+  String get stats_by_employee => 'По сотрудникам';
+
+  @override
+  String get stats_today => 'Сегодня';
+
+  @override
+  String get stats_week => 'Неделя';
+
+  @override
+  String get stats_month => 'Месяц';
+
+  @override
+  String get stats_no_data => 'Нет данных';
+
+  @override
+  String get stats_sales_unit => 'продаж';
+
+  @override
+  String get stats_sats_unit => 'сат';
+
+  @override
+  String get total_label => 'ИТОГО';
+
+  @override
+  String get btc_unit => 'BTC';
+
+  @override
+  String get history_ticket => 'Чек';
+
+  @override
+  String get history_delete => 'Удалить';
+
+  @override
+  String get print_subject => 'Чек продажи LaChispaPOS';
+
+  @override
+  String get print_header => 'LA  CHISPA';
+
+  @override
+  String get print_subtitle => 'Lightning POS';
+
+  @override
+  String get print_thanks => '  Спасибо за покупку!';
+
+  @override
+  String get print_url => '  lachispa.me';
+
+  @override
+  String get export_subject => 'Экспорт продаж POS Lightning';
+
+  @override
+  String get export_invalid_json => 'Неверный JSON файл';
+
+  @override
+  String get export_unknown => 'Неизвестно';
+
+  @override
+  String get export_imported_name => 'Импортировано';
+
+  @override
+  String get export_catalog_subject => 'Каталог товаров LaChispaPOS';
 }

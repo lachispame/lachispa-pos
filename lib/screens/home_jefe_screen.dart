@@ -126,10 +126,24 @@ class HomeJefeScreen extends StatelessWidget {
         ],
       ),
       drawer: const AppDrawer(),
-      body: Padding(
+          body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
+            _MenuCard(
+              icon: Icons.store,
+              title: 'CATÁLOGO',
+              subtitle: 'Gestionar productos',
+              onTap: () => Navigator.pushNamed(context, '/catalog'),
+            ),
+            const SizedBox(height: 12),
+            _MenuCard(
+              icon: Icons.bar_chart,
+              title: 'ESTADÍSTICAS',
+              subtitle: 'Ventas, gráficos y top productos',
+              onTap: () => Navigator.pushNamed(context, '/stats'),
+            ),
+            const SizedBox(height: 12),
             _MenuCard(
               icon: Icons.file_upload,
               title: l10n.import_sales,

@@ -420,26 +420,306 @@ class AppLocalizationsPt extends AppLocalizations {
   String get discard_confirm => 'Excluir todas as vendas importadas?';
 
   @override
-  String get pay_with_nfc => 'Pagar con NFC';
+  String get pay_with_nfc => 'Pagar com NFC';
 
   @override
-  String get nfc_not_available => 'NFC no disponible';
+  String get nfc_not_available => 'NFC não disponível';
 
   @override
-  String get nfc_ready => 'Acerque el dispositivo al cliente';
+  String get nfc_ready => 'Aproxime o dispositivo do cliente';
 
   @override
-  String get nfc_payment_cancelled => 'Pago NFC cancelado';
+  String get nfc_payment_cancelled => 'Pagamento NFC cancelado';
 
   @override
-  String get nfc_error => 'Error NFC';
+  String get nfc_error => 'Erro NFC';
 
   @override
-  String get tap_to_pay => 'Tocar para pagar';
+  String get tap_to_pay => 'Toque para pagar';
 
   @override
-  String get nfc_reading => 'Leyendo NFC...';
+  String get nfc_reading => 'Lendo NFC...';
 
   @override
-  String get lnurl_error => 'Error del servidor';
+  String get lnurl_error => 'Erro do servidor';
+
+  @override
+  String get drawer_stats => 'ESTATÍSTICAS';
+
+  @override
+  String get drawer_stats_subtitle => 'Vendas, gráficos e top produtos';
+
+  @override
+  String get drawer_catalog => 'CATÁLOGO';
+
+  @override
+  String get drawer_catalog_subtitle => 'Gerenciar produtos';
+
+  @override
+  String get drawer_import_sales => 'IMPORTAR VENDAS';
+
+  @override
+  String get drawer_import_sales_subtitle => 'Importar vendas de funcionários';
+
+  @override
+  String get drawer_export_sales => 'EXPORTAR VENDAS';
+
+  @override
+  String get drawer_export_sales_subtitle => 'Exportar vendas para JSON';
+
+  @override
+  String get drawer_import_catalog => 'IMPORTAR CATÁLOGO';
+
+  @override
+  String get drawer_import_catalog_subtitle => 'Produtos do chefe';
+
+  @override
+  String get drawer_delete_imported_subtitle => 'Excluir vendas importadas';
+
+  @override
+  String get drawer_logout => 'Sair';
+
+  @override
+  String get catalog_title => 'Catálogo de Produtos';
+
+  @override
+  String get catalog_new_product => 'Novo Produto';
+
+  @override
+  String get catalog_edit_product => 'Editar Produto';
+
+  @override
+  String get catalog_product_name_label => 'Nome';
+
+  @override
+  String get catalog_product_name_hint => 'Nome do produto';
+
+  @override
+  String get catalog_product_price_label => 'Preço';
+
+  @override
+  String get catalog_product_currency_label => 'Moeda';
+
+  @override
+  String get catalog_category_label => 'Categoria (opcional)';
+
+  @override
+  String get catalog_category_hint => 'Ex: Bebidas, Comidas';
+
+  @override
+  String get catalog_save => 'Salvar';
+
+  @override
+  String get catalog_add => 'Adicionar';
+
+  @override
+  String get catalog_delete_title => 'Excluir Produto';
+
+  @override
+  String catalog_delete_confirm(Object productName) {
+    return 'Excluir \"$productName\"?';
+  }
+
+  @override
+  String get catalog_export_tooltip => 'Exportar catálogo';
+
+  @override
+  String get catalog_no_products => 'Nenhum produto';
+
+  @override
+  String get catalog_add_first => 'Adicionar primeiro produto';
+
+  @override
+  String get catalog_import_title => 'Importar Catálogo';
+
+  @override
+  String catalog_import_confirm(Object count) {
+    return 'Importar $count produtos?';
+  }
+
+  @override
+  String catalog_imported(Object count) {
+    return '$count produtos importados';
+  }
+
+  @override
+  String get catalog_invalid_file => 'Arquivo de catálogo inválido';
+
+  @override
+  String get receipt_title => 'Recibo';
+
+  @override
+  String get receipt_brand => 'LA CHISPA';
+
+  @override
+  String get receipt_subtitle => 'Lightning POS';
+
+  @override
+  String get receipt_employee => 'Funcionário';
+
+  @override
+  String get receipt_date => 'Data';
+
+  @override
+  String get receipt_total => 'TOTAL';
+
+  @override
+  String get receipt_sats => 'sats';
+
+  @override
+  String get receipt_thanks => 'Obrigado pela sua compra!';
+
+  @override
+  String get receipt_website => 'lachispa.me';
+
+  @override
+  String get receipt_share => 'Compartilhar Recibo';
+
+  @override
+  String get receipt_new_sale => 'Nova Venda';
+
+  @override
+  String get receipt_share_tooltip => 'Compartilhar';
+
+  @override
+  String get currency_mismatch_title => 'Moedas diferentes';
+
+  @override
+  String currency_mismatch_message(Object currency) {
+    return 'Não é possível misturar moedas na mesma venda. A venda atual está em $currency. Finalize ou cancele a venda atual para mudar de moeda.';
+  }
+
+  @override
+  String get got_it => 'Entendi';
+
+  @override
+  String get manual_entry_tooltip => 'Entrada manual';
+
+  @override
+  String get catalog_mode_tooltip => 'Catálogo';
+
+  @override
+  String get search_products_hint => 'Buscar produtos...';
+
+  @override
+  String no_results_in_currency(Object currency) {
+    return 'Sem resultados em $currency';
+  }
+
+  @override
+  String no_products_in_currency(Object currency) {
+    return 'Nenhum produto em $currency';
+  }
+
+  @override
+  String get try_other_currency => 'Tente outra moeda';
+
+  @override
+  String get product_label => 'Produto';
+
+  @override
+  String get name_hint => 'Nome';
+
+  @override
+  String get price_label => 'Preço';
+
+  @override
+  String get add_products_hint => 'Adicione produtos';
+
+  @override
+  String invoice_memo(Object userName) {
+    return 'Venda POS - $userName';
+  }
+
+  @override
+  String get settings_manual_entry => 'Ou insira manualmente:';
+
+  @override
+  String get settings_url_label => 'URL';
+
+  @override
+  String get settings_url_hint =>
+      'https://lachispa.me ou http://192.168.1.x:5000';
+
+  @override
+  String get settings_api_key_label => 'Chave API';
+
+  @override
+  String get settings_ticket_section => 'Recibo';
+
+  @override
+  String get settings_ticket_description =>
+      'Após cada venda você pode compartilhar o recibo como texto. Suporte para impressora térmica será adicionado posteriormente.';
+
+  @override
+  String get stats_title => 'Estatísticas';
+
+  @override
+  String get stats_last_7_days => 'Vendas últimos 7 dias';
+
+  @override
+  String get stats_top_products => 'Top Produtos';
+
+  @override
+  String get stats_by_employee => 'Por Funcionário';
+
+  @override
+  String get stats_today => 'Hoje';
+
+  @override
+  String get stats_week => 'Semana';
+
+  @override
+  String get stats_month => 'Mês';
+
+  @override
+  String get stats_no_data => 'Sem dados';
+
+  @override
+  String get stats_sales_unit => 'vendas';
+
+  @override
+  String get stats_sats_unit => 'sats';
+
+  @override
+  String get total_label => 'TOTAL';
+
+  @override
+  String get btc_unit => 'BTC';
+
+  @override
+  String get history_ticket => 'Recibo';
+
+  @override
+  String get history_delete => 'Excluir';
+
+  @override
+  String get print_subject => 'Recibo de venda LaChispaPOS';
+
+  @override
+  String get print_header => 'LA  CHISPA';
+
+  @override
+  String get print_subtitle => 'Lightning POS';
+
+  @override
+  String get print_thanks => '  Obrigado pela sua compra!';
+
+  @override
+  String get print_url => '  lachispa.me';
+
+  @override
+  String get export_subject => 'Exportação de vendas POS Lightning';
+
+  @override
+  String get export_invalid_json => 'Arquivo JSON inválido';
+
+  @override
+  String get export_unknown => 'Desconhecido';
+
+  @override
+  String get export_imported_name => 'Importado';
+
+  @override
+  String get export_catalog_subject => 'Catálogo de produtos LaChispaPOS';
 }

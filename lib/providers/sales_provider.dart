@@ -219,6 +219,148 @@ class SalesProvider extends ChangeNotifier {
     return (result.first['count'] as int?) ?? 0;
   }
 
+  Future<List<Sale>> getSalesForPeriod(DateTime start, DateTime end) async {
+    final db = await DatabaseHelper.instance.database;
+    final result = await db.query(
+      'sales',
+      where: 'estado = ? AND fecha >= ? AND fecha <= ?',
+      whereArgs: ['completada', start.toIso8601String(), end.toIso8601String()],
+      orderBy: 'fecha DESC',
+    );
+
+    final sales = <Sale>[];
+    for (final saleMap in result) {
+      final items = await _getSaleItems(saleMap['id'] as String);
+      sales.add(Sale.fromMap(saleMap, items));
+    }
+    return sales;
+  }
+
+  Future<Map<String, dynamic>> getTodayStats({String? userId}) async {
+    final now = DateTime.now();
+    final start = DateTime(now.year, now.month, now.day);
+    final end = start.add(const Duration(days: 1));
+
+    final sales = await getSalesForPeriod(start, end);
+    final filtered = userId == null
+        ? sales
+        : sales.where((s) => s.userId == userId).toList();
+
+    return {
+      'count': filtered.length,
+      'totalSats':
+          filtered.fold<int>(0, (sum, s) => sum + s.totalSats),
+      'totalFiat': filtered.fold<double>(
+        0.0,
+        (sum, s) => sum + s.totalFiat,
+      ),
+    };
+  }
+
+  Future<Map<String, dynamic>> getWeekStats({String? userId}) async {
+    final now = DateTime.now();
+    final start = now.subtract(Duration(days: now.weekday - 1));
+    final startDay = DateTime(start.year, start.month, start.day);
+    final end = startDay.add(const Duration(days: 7));
+
+    final sales = await getSalesForPeriod(startDay, end);
+    final filtered = userId == null
+        ? sales
+        : sales.where((s) => s.userId == userId).toList();
+
+    return {
+      'count': filtered.length,
+      'totalSats':
+          filtered.fold<int>(0, (sum, s) => sum + s.totalSats),
+      'totalFiat': filtered.fold<double>(
+        0.0,
+        (sum, s) => sum + s.totalFiat,
+      ),
+    };
+  }
+
+  Future<Map<String, dynamic>> getMonthStats({String? userId}) async {
+    final now = DateTime.now();
+    final start = DateTime(now.year, now.month, 1);
+    final end = DateTime(now.year, now.month + 1, 1);
+
+    final sales = await getSalesForPeriod(start, end);
+    final filtered = userId == null
+        ? sales
+        : sales.where((s) => s.userId == userId).toList();
+
+    return {
+      'count': filtered.length,
+      'totalSats':
+          filtered.fold<int>(0, (sum, s) => sum + s.totalSats),
+      'totalFiat': filtered.fold<double>(
+        0.0,
+        (sum, s) => sum + s.totalFiat,
+      ),
+    };
+  }
+
+  Future<List<Map<String, dynamic>>> getSalesPerDay(int days) async {
+    final now = DateTime.now();
+    final result = <Map<String, dynamic>>[];
+
+    for (int i = days - 1; i >= 0; i--) {
+      final day = DateTime(now.year, now.month, now.day - i);
+      final nextDay = day.add(const Duration(days: 1));
+      final daySales = await getSalesForPeriod(day, nextDay);
+      final totalSats = daySales.fold<int>(0, (sum, s) => sum + s.totalSats);
+
+      result.add({
+        'date': day,
+        'totalSats': totalSats,
+        'count': daySales.length,
+      });
+    }
+
+    return result;
+  }
+
+  Future<List<Map<String, dynamic>>> getTopProducts({int limit = 5}) async {
+    final db = await DatabaseHelper.instance.database;
+    final result = await db.rawQuery('''
+      SELECT nombre, SUM(cantidad) as total_qty,
+             SUM(subtotal_sats) as total_sats
+      FROM sale_items
+      WHERE sale_id IN (
+        SELECT id FROM sales WHERE estado = 'completada'
+      )
+      GROUP BY nombre
+      ORDER BY total_qty DESC
+      LIMIT ?
+    ''', [limit]);
+
+    return result.map((r) => {
+      'nombre': r['nombre'] as String,
+      'cantidad': (r['total_qty'] as num).toInt(),
+      'totalSats': (r['total_sats'] as num).toInt(),
+    }).toList();
+  }
+
+  Future<List<Map<String, dynamic>>> getEmployeeSummary() async {
+    final db = await DatabaseHelper.instance.database;
+    final result = await db.rawQuery('''
+      SELECT user_id, user_nombre,
+             COUNT(*) as count,
+             SUM(total_sats) as total_sats
+      FROM sales
+      WHERE estado = 'completada'
+      GROUP BY user_id
+      ORDER BY total_sats DESC
+    ''');
+
+    return result.map((r) => {
+      'userId': r['user_id'] as String,
+      'userNombre': r['user_nombre'] as String,
+      'count': (r['count'] as num).toInt(),
+      'totalSats': (r['total_sats'] as num).toInt(),
+    }).toList();
+  }
+
   Future<void> deleteSale(String id) async {
     final db = await DatabaseHelper.instance.database;
     await db.delete('sale_items', where: 'sale_id = ?', whereArgs: [id]);

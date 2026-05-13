@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../core/theme/app_theme.dart';
+import '../core/constants/app_constants.dart';
 
 class AboutScreen extends StatelessWidget {
   const AboutScreen({super.key});
@@ -42,7 +43,7 @@ class AboutScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    '${l10n.about_version} 1.0.0',
+                    '${l10n.about_version} ${AppConstants.appVersion}',
                     style: TextStyle(color: Colors.grey[400]),
                   ),
                 ],
@@ -71,8 +72,7 @@ class AboutScreen extends StatelessWidget {
             _FeatureItem(
               icon: Icons.attach_money,
               title: l10n.currency_settings,
-              description:
-                  'CUP, MLC (CBDC), USD, EUR, GBP, CAD, JPY, AUD, CHF, SATs',
+              description: l10n.currency_settings,
             ),
             _FeatureItem(
               icon: Icons.currency_exchange,
@@ -171,7 +171,7 @@ class AboutScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Powered by Lachispa.me',
+                    '${l10n.developed_with} Lachispa.me',
                     style: TextStyle(color: Colors.grey[500], fontSize: 12),
                   ),
                 ],

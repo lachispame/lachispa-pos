@@ -1,10 +1,13 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../core/theme/app_theme.dart';
 import '../core/services/lachispa_api_service.dart';
 import '../providers/auth_provider.dart';
 import '../l10n/generated/app_localizations.dart';
+import '../services/print_service.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -20,9 +23,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
   bool _testing = false;
   bool? _connectionOk;
 
+  PrinterConfig _printerConfig = PrinterConfig();
+  static const String _printerConfigKey = 'printer_config';
+
   @override
   void initState() {
     super.initState();
+    _loadPrinterConfig();
     final user = context.read<AuthProvider>().currentUser;
     if (user?.lndhubUrl != null) {
       _urlController.text = user!.lndhubUrl!;
@@ -30,6 +37,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
     if (user?.lndhubCreds != null) {
       _apiKeyController.text = user!.lndhubCreds!;
     }
+  }
+
+  Future<void> _loadPrinterConfig() async {
+    final prefs = await SharedPreferences.getInstance();
+    final json = prefs.getString(_printerConfigKey);
+    if (json != null) {
+      try {
+        final map = jsonDecode(json) as Map<String, dynamic>;
+        _printerConfig = PrinterConfig.fromJson(map);
+      } catch (_) {}
+    }
+  }
+
+  Future<void> _savePrinterConfig() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(
+      _printerConfigKey,
+      const JsonEncoder().convert(_printerConfig.toJson()),
+    );
   }
 
   @override
@@ -148,22 +174,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
             const SizedBox(height: 24),
             Text(
-              'O ingrese manualmente:',
+              l10n.settings_manual_entry,
               style: TextStyle(fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 16),
             TextField(
               controller: _urlController,
               decoration: InputDecoration(
-                labelText: 'URL',
-                hintText: 'https://lachispa.me o http://192.168.1.x:5000',
+                labelText: l10n.settings_url_label,
+                hintText: l10n.settings_url_hint,
               ),
             ),
             const SizedBox(height: 16),
             TextField(
               controller: _apiKeyController,
               obscureText: true,
-              decoration: const InputDecoration(labelText: 'API Key'),
+              decoration: InputDecoration(labelText: l10n.settings_api_key_label),
             ),
             const SizedBox(height: 24),
             if (_connectionOk != null)
@@ -203,6 +229,31 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
                     : Text(l10n.save),
+              ),
+            ),
+            const SizedBox(height: 32),
+            const Divider(),
+            const SizedBox(height: 16),
+            Text(
+              l10n.settings_ticket_section,
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  children: [
+                    const Icon(Icons.receipt, color: AppTheme.primaryColor),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        l10n.settings_ticket_description,
+                        style: TextStyle(fontSize: 13, color: Colors.grey[400]),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
