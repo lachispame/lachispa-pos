@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -12,6 +13,7 @@ import '../providers/auth_provider.dart';
 import '../providers/sales_provider.dart';
 import '../providers/product_provider.dart';
 import '../core/database/database_helper.dart';
+import 'catalog_qr_scanner.dart';
 
 class AppDrawer extends StatelessWidget {
   final VoidCallback? onLanguageChanged;
@@ -313,8 +315,40 @@ class AppDrawer extends StatelessWidget {
   Future<void> _importCatalog(BuildContext context) async {
     final l10n = AppLocalizations.of(context)!;
     final productProvider = context.read<ProductProvider>();
-    final data = await productProvider.pickCatalogJson();
-    if (data == null) return;
+
+    final source = await showDialog<String>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: AppTheme.cardColor,
+        title: Text(l10n.drawer_import_catalog),
+        content: Text(l10n.catalog_qr_scan_choice),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, 'file'),
+            child: Text(l10n.import_button),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(ctx, 'qr'),
+            child: Text(l10n.catalog_qr_scan_button),
+          ),
+        ],
+      ),
+    );
+
+    if (source == null || !context.mounted) return;
+
+    Map<String, dynamic>? data;
+
+    if (source == 'file') {
+      data = await productProvider.pickCatalogJson();
+    } else {
+      data = await Navigator.push<Map<String, dynamic>>(
+        context,
+        MaterialPageRoute(builder: (_) => const CatalogQrImportScanner()),
+      );
+    }
+
+    if (data == null || !context.mounted) return;
 
     final productos = data['productos'] as List<dynamic>?;
     if (productos == null || productos.isEmpty) {

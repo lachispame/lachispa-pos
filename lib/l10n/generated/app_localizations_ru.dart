@@ -735,4 +735,26 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get tables_active_title => 'Mesas activas';
+
+  @override
+  String get catalog_qr_export => 'Exportar QR';
+
+  @override
+  String catalog_qr_page(Object current, Object total) {
+    return 'QR $current de $total';
+  }
+
+  @override
+  String get catalog_qr_scan_button => 'Escanear QR';
+
+  @override
+  String catalog_qr_progress(Object current, Object total) {
+    return 'Escaneado QR $current de $total';
+  }
+
+  @override
+  String get catalog_qr_done => '¡Catálogo completo!';
+
+  @override
+  String get catalog_qr_scan_choice => 'Importar desde archivo o escanear QR';
 }

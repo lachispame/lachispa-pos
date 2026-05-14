@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -7,6 +8,7 @@ import '../core/theme/app_theme.dart';
 import '../models/product.dart';
 import '../providers/product_provider.dart';
 import '../providers/currency_settings_provider.dart';
+import '../widgets/catalog_qr_scanner.dart';
 
 class ProductCatalogScreen extends StatefulWidget {
   const ProductCatalogScreen({super.key});
@@ -233,9 +235,17 @@ class _ProductCatalogScreenState extends State<ProductCatalogScreen> {
         actions: [
           if (provider.products.isNotEmpty)
             IconButton(
-              icon: const Icon(Icons.file_upload),
-              tooltip: l10n.catalog_export_tooltip,
-              onPressed: () => provider.exportCatalog(),
+              icon: const Icon(Icons.qr_code),
+              tooltip: l10n.catalog_qr_export,
+              onPressed: () => showCatalogQrExport(
+                context: context,
+                products: provider.products.map((p) => {
+                  'nombre': p.nombre,
+                  'precio': p.precio,
+                  'moneda': p.moneda,
+                  'categoria': p.categoria,
+                }).toList(),
+              ),
             ),
           IconButton(
             icon: const Icon(Icons.add),
