@@ -247,6 +247,7 @@
   "print_subtitle": "Lightning POS",
   "print_thanks": "  ご購入ありがとうございます！",
   "print_url": "  lachispa.me",
+  "print_invoice": "請求書:",
 
   "export_subject": "POS Lightning売上エクスポート",
   "export_invalid_json": "無効なJSONファイル",

@@ -248,6 +248,7 @@
   "print_subtitle": "Punto de Venta Lightning",
   "print_thanks": "  ¡Gracias por su compra!",
   "print_url": "  lachispa.me",
+  "print_invoice": "Factura:",
 
   "export_subject": "Exportación de ventas POS Lightning",
   "export_invalid_json": "Archivo JSON inválido",

@@ -710,6 +710,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get print_url => '  lachispa.me';
 
   @override
+  String get print_invoice => 'Счет:';
+
+  @override
   String get export_subject => 'Экспорт продаж POS Lightning';
 
   @override

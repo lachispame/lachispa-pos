@@ -68,7 +68,7 @@ class PrintService {
     buf.writeln('${'║ ${sale.totalSats} ${l10n.receipt_sats}'.padRight(30)}║');
     buf.writeln('╠══════════════════════════════╣');
     if (sale.invoiceId != null) {
-      buf.writeln('║ Invoice: ${sale.invoiceId!.substring(0, 16)}...║');
+      buf.writeln('║ ${l10n.print_invoice} ${sale.invoiceId!.substring(0, 16)}...║');
     }
     buf.writeln('╚══════════════════════════════╝');
     buf.writeln(l10n.print_thanks);

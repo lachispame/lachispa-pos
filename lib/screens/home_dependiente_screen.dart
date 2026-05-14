@@ -139,8 +139,8 @@ class _HomeDependienteScreenState extends State<HomeDependienteScreen> {
     if (productos == null || productos.isEmpty) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Archivo de catálogo inválido'),
+          SnackBar(
+            content: Text(l10n.catalog_invalid_file),
             backgroundColor: Colors.red,
           ),
         );
@@ -153,8 +153,8 @@ class _HomeDependienteScreenState extends State<HomeDependienteScreen> {
         context: context,
         builder: (ctx) => AlertDialog(
           backgroundColor: AppTheme.cardColor,
-          title: const Text('Importar Catálogo'),
-          content: Text('¿Importar ${productos.length} productos?'),
+          title: Text(l10n.catalog_import_title),
+          content: Text(l10n.catalog_import_confirm(productos.length)),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(ctx, false),
@@ -171,7 +171,7 @@ class _HomeDependienteScreenState extends State<HomeDependienteScreen> {
       if (confirmed == true && mounted) {
         final imported = await productProvider.importCatalogFromJson(data);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('$imported productos importados')),
+          SnackBar(content: Text(l10n.catalog_imported(imported))),
         );
       }
     }
@@ -219,8 +219,8 @@ class _HomeDependienteScreenState extends State<HomeDependienteScreen> {
             const SizedBox(height: 12),
             _MenuCard(
               icon: Icons.bar_chart,
-              title: 'ESTADÍSTICAS',
-              subtitle: 'Ventas, gráficos y top productos',
+              title: l10n.drawer_stats,
+              subtitle: l10n.drawer_stats_subtitle,
               onTap: () => Navigator.pushNamed(context, '/stats'),
             ),
             const SizedBox(height: 12),
@@ -233,8 +233,8 @@ class _HomeDependienteScreenState extends State<HomeDependienteScreen> {
             const SizedBox(height: 12),
             _MenuCard(
               icon: Icons.inventory_2,
-              title: 'IMPORTAR CATÁLOGO',
-              subtitle: 'Productos del jefe',
+              title: l10n.drawer_import_catalog,
+              subtitle: l10n.drawer_import_catalog_subtitle,
               onTap: _importarCatalogo,
             ),
             const SizedBox(height: 12),

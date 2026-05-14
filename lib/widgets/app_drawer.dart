@@ -64,7 +64,7 @@ class AppDrawer extends StatelessWidget {
                   if (user != null) ...[
                     const SizedBox(height: 4),
                     Text(
-                      '${user.nombre} · ${isJefe ? "Jefe" : "Dependiente"}',
+                      '${user.nombre} · ${isJefe ? l10n.boss_role : l10n.employee_role}',
                       style: TextStyle(color: Colors.grey[400], fontSize: 14),
                     ),
                   ],

@@ -1472,6 +1472,12 @@ abstract class AppLocalizations {
   /// **'  lachispa.me'**
   String get print_url;
 
+  /// No description provided for @print_invoice.
+  ///
+  /// In es, this message translates to:
+  /// **'Factura:'**
+  String get print_invoice;
+
   /// No description provided for @export_subject.
   ///
   /// In es, this message translates to:

@@ -287,9 +287,9 @@ class _SaleCard extends StatelessWidget {
                   child: OutlinedButton.icon(
                     onPressed: onPrint,
                     icon: const Icon(Icons.print, color: AppTheme.primaryColor),
-                    label: const Text(
-                      'Ticket',
-                      style: TextStyle(color: AppTheme.primaryColor),
+                    label: Text(
+                      l10n.history_ticket,
+                      style: const TextStyle(color: AppTheme.primaryColor),
                     ),
                     style: OutlinedButton.styleFrom(
                       side: const BorderSide(color: AppTheme.primaryColor),
@@ -301,9 +301,9 @@ class _SaleCard extends StatelessWidget {
                   child: OutlinedButton.icon(
                     onPressed: onDelete,
                     icon: const Icon(Icons.delete, color: Colors.red),
-                    label: const Text(
-                      'Eliminar',
-                      style: TextStyle(color: Colors.red),
+                    label: Text(
+                      l10n.delete_button,
+                      style: const TextStyle(color: Colors.red),
                     ),
                     style: OutlinedButton.styleFrom(
                       side: const BorderSide(color: Colors.red),

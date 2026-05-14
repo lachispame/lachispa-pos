@@ -709,6 +709,9 @@ class AppLocalizationsPt extends AppLocalizations {
   String get print_url => '  lachispa.me';
 
   @override
+  String get print_invoice => 'Fatura:';
+
+  @override
   String get export_subject => 'Exportação de vendas POS Lightning';
 
   @override

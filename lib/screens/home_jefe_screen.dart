@@ -132,15 +132,15 @@ class HomeJefeScreen extends StatelessWidget {
           children: [
             _MenuCard(
               icon: Icons.store,
-              title: 'CATÁLOGO',
-              subtitle: 'Gestionar productos',
+              title: l10n.drawer_catalog,
+              subtitle: l10n.drawer_catalog_subtitle,
               onTap: () => Navigator.pushNamed(context, '/catalog'),
             ),
             const SizedBox(height: 12),
             _MenuCard(
               icon: Icons.bar_chart,
-              title: 'ESTADÍSTICAS',
-              subtitle: 'Ventas, gráficos y top productos',
+              title: l10n.drawer_stats,
+              subtitle: l10n.drawer_stats_subtitle,
               onTap: () => Navigator.pushNamed(context, '/stats'),
             ),
             const SizedBox(height: 12),
