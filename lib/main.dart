@@ -8,6 +8,7 @@ import 'providers/auth_provider.dart';
 import 'providers/cart_provider.dart';
 import 'providers/sales_provider.dart';
 import 'providers/product_provider.dart';
+import 'providers/table_provider.dart';
 import 'core/theme/app_theme.dart';
 import 'core/database/database_helper.dart';
 import 'screens/login_screen.dart';
@@ -46,6 +47,7 @@ class POSApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => CartProvider()),
         ChangeNotifierProvider(create: (_) => SalesProvider()),
         ChangeNotifierProvider(create: (_) => ProductProvider()),
+        ChangeNotifierProvider(create: (_) => TableProvider()),
       ],
       child: Builder(
         builder: (context) {

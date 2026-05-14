@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:provider/provider.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../core/theme/app_theme.dart';
 import '../models/product.dart';
 import '../providers/product_provider.dart';
+import '../providers/currency_settings_provider.dart';
 
 class ProductCatalogScreen extends StatefulWidget {
   const ProductCatalogScreen({super.key});
@@ -44,12 +46,22 @@ class _ProductCatalogScreenState extends State<ProductCatalogScreen> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              TextField(
-                controller: controllerNombre,
-                decoration: InputDecoration(
-                  labelText: l10n.catalog_product_name_label,
-                  hintText: l10n.catalog_product_name_hint,
-                ),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: controllerNombre,
+                      decoration: InputDecoration(
+                        labelText: l10n.catalog_product_name_label,
+                        hintText: l10n.catalog_product_name_hint,
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.qr_code_scanner),
+                    onPressed: () => _scanQrForForm(controllerNombre, controllerPrecio),
+                  ),
+                ],
               ),
               const SizedBox(height: 12),
               TextField(
@@ -63,7 +75,7 @@ class _ProductCatalogScreenState extends State<ProductCatalogScreen> {
                 value: moneda,
                 decoration: InputDecoration(labelText: l10n.catalog_product_currency_label),
                 dropdownColor: AppTheme.cardColor,
-                items: ['USD', 'CUP', 'MLC', 'EUR', 'SAT']
+                items: ctx.read<CurrencySettingsProvider>().displaySequence
                     .map(
                       (m) => DropdownMenuItem(value: m, child: Text(m)),
                     )
@@ -150,6 +162,62 @@ class _ProductCatalogScreenState extends State<ProductCatalogScreen> {
     if (confirmed == true && mounted) {
       await context.read<ProductProvider>().deleteProduct(product.id);
     }
+  }
+
+  void _scanQrForForm(TextEditingController nombreController, TextEditingController precioController) {
+    final l10n = AppLocalizations.of(context)!;
+    var done = false;
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => Scaffold(
+          backgroundColor: Colors.black,
+          appBar: AppBar(
+            title: Text(l10n.scan_product),
+            leading: IconButton(
+              icon: const Icon(Icons.close),
+              onPressed: () => Navigator.pop(context),
+            ),
+          ),
+          body: MobileScanner(
+            onDetect: (capture) {
+              if (done) return;
+              done = true;
+              final barcodes = capture.barcodes;
+              if (barcodes.isEmpty || barcodes.first.rawValue == null) {
+                done = false;
+                return;
+              }
+              final data = barcodes.first.rawValue!;
+              final parts = data.split('|');
+              if (parts.length < 2) {
+                done = false;
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('${l10n.error_generic}: QR inválido'), backgroundColor: Colors.red),
+                  );
+                }
+                return;
+              }
+              final nombre = parts[0].trim();
+              final precio = double.tryParse(parts[1].trim());
+              if (nombre.isEmpty || precio == null || !precio.isFinite || precio <= 0) {
+                done = false;
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('${l10n.error_generic}: QR inválido'), backgroundColor: Colors.red),
+                  );
+                }
+                return;
+              }
+              nombreController.text = nombre;
+              precioController.text = precio.toStringAsFixed(2);
+              Navigator.pop(context);
+            },
+          ),
+        ),
+      ),
+    );
   }
 
   @override

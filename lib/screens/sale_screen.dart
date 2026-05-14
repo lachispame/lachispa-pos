@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:provider/provider.dart';
 import '../core/theme/app_theme.dart';
 import '../core/services/lachispa_api_service.dart';
@@ -14,6 +15,9 @@ import '../widgets/total_display.dart';
 import '../widgets/currency_selector.dart';
 import '../widgets/qr_display.dart';
 import '../widgets/app_drawer.dart';
+import '../providers/table_provider.dart';
+import '../models/sale.dart';
+import '../models/sale_item.dart';
 import '../l10n/generated/app_localizations.dart';
 
 class SaleScreen extends StatefulWidget {
@@ -40,6 +44,7 @@ class _SaleScreenState extends State<SaleScreen> {
   void initState() {
     super.initState();
     context.read<ProductProvider>().loadProducts();
+    context.read<TableProvider>().loadSavedTables();
     _checkRecoverableCart();
   }
 
@@ -190,6 +195,69 @@ class _SaleScreenState extends State<SaleScreen> {
         );
       }
     }
+  }
+
+  void _scanProductQrForCart() {
+    final l10n = AppLocalizations.of(context)!;
+    var done = false;
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => Scaffold(
+          backgroundColor: Colors.black,
+          appBar: AppBar(
+            title: Text(l10n.scan_product),
+            leading: IconButton(
+              icon: const Icon(Icons.close),
+              onPressed: () => Navigator.pop(context),
+            ),
+          ),
+          body: MobileScanner(
+            onDetect: (capture) {
+              if (done) return;
+              done = true;
+              final barcodes = capture.barcodes;
+              if (barcodes.isEmpty || barcodes.first.rawValue == null) {
+                done = false;
+                return;
+              }
+              final data = barcodes.first.rawValue!;
+              final parts = data.split('|');
+              if (parts.length < 2) {
+                done = false;
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('${l10n.error_generic}: QR inválido'), backgroundColor: Colors.red),
+                  );
+                }
+                return;
+              }
+              final nombre = parts[0].trim();
+              final precio = double.tryParse(parts[1].trim());
+              if (nombre.isEmpty || precio == null || !precio.isFinite || precio <= 0) {
+                done = false;
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('${l10n.error_generic}: QR inválido'), backgroundColor: Colors.red),
+                  );
+                }
+                return;
+              }
+
+              final cart = context.read<CartProvider>();
+              if (!_canAddCurrency(cart.monedaVenta.codigo)) {
+                done = false;
+                Navigator.pop(context);
+                _showCurrencyMismatchDialog();
+                return;
+              }
+              cart.addItem(nombre: nombre, precio: precio, cantidad: 1);
+              Navigator.pop(context);
+            },
+          ),
+        ),
+      ),
+    );
   }
 
   Future<void> _crearInvoice() async {
@@ -375,6 +443,11 @@ class _SaleScreenState extends State<SaleScreen> {
 
             final sale = await salesProvider.getSaleById(saleId);
 
+            final tableProvider = context.read<TableProvider>();
+            if (tableProvider.hasActiveTable) {
+              await tableProvider.closeTable(tableProvider.currentTable!);
+            }
+
             await cart.clearCart();
             LachispaApiService.instance.disconnect();
 
@@ -410,10 +483,144 @@ class _SaleScreenState extends State<SaleScreen> {
     }
   }
 
+  void _showTableDialog() {
+    final tableProvider = context.read<TableProvider>();
+    final l10n = AppLocalizations.of(context)!;
+
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        final tables = tableProvider.activeTables;
+        int selectedTable = tableProvider.currentTable ?? (tables.isNotEmpty ? tables.first : 1);
+        final controller = TextEditingController(text: selectedTable.toString());
+
+        return StatefulBuilder(
+          builder: (ctx, setDialogState) => AlertDialog(
+            backgroundColor: AppTheme.cardColor,
+            title: Text(l10n.roles_title),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: controller,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    labelText: l10n.settings_ticket_section,
+                    prefixIcon: const Icon(Icons.table_restaurant),
+                  ),
+                  onChanged: (v) {
+                    final n = int.tryParse(v);
+                    if (n != null) setDialogState(() => selectedTable = n);
+                  },
+                ),
+                if (tables.isNotEmpty) ...[
+                  const SizedBox(height: 16),
+                  Text(l10n.history_title, style: const TextStyle(fontSize: 13, color: Colors.grey)),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 8,
+                    children: tables.map((t) {
+                      final itemCount = tableProvider.itemsForTable(t).length;
+                      return ActionChip(
+                        label: Text('${l10n.settings_ticket_section} $t ($itemCount)'),
+                        onPressed: () {
+                          Navigator.pop(ctx);
+                          _selectTable(t);
+                        },
+                      );
+                    }).toList(),
+                  ),
+                ],
+              ],
+            ),
+            actions: [
+              if (tableProvider.hasActiveTable)
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(ctx);
+                    _closeTable(tableProvider.currentTable!);
+                  },
+                  child: Text(l10n.discard_sale, style: const TextStyle(color: Colors.red)),
+                ),
+              TextButton(
+                onPressed: () => Navigator.pop(ctx),
+                child: Text(l10n.cancel_button),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(ctx);
+                  _selectTable(selectedTable);
+                },
+                child: Text(l10n.got_it),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _selectTable(int table) async {
+    final tableProvider = context.read<TableProvider>();
+    final cart = context.read<CartProvider>();
+
+    if (tableProvider.currentTable != null && tableProvider.currentTable != table) {
+      await tableProvider.saveCartToTable(tableProvider.currentTable!, List.from(cart.items));
+    }
+
+    if (tableProvider.currentTable == table) return;
+
+    await cart.clearCart();
+    await tableProvider.selectTable(table);
+
+    final items = tableProvider.itemsForTable(table);
+    if (items.isNotEmpty) {
+      cart.loadFromPendingSale(Sale(
+        id: '',
+        userId: '',
+        userNombre: '',
+        fecha: DateTime.now(),
+        items: items.map((ci) => SaleItem(
+          saleId: '',
+          nombre: ci.nombre,
+          precioUnitario: ci.precioUnitario,
+          moneda: ci.moneda,
+          cantidad: ci.cantidad,
+          subtotalFiat: ci.subtotalFiat,
+          subtotalSats: ci.subtotalSats,
+        )).toList(),
+        totalFiat: items.fold(0.0, (s, i) => s + i.subtotalFiat),
+        moneda: items.first.moneda,
+        totalSats: items.fold(0, (s, i) => s + i.subtotalSats),
+        rateUsado: 0,
+        invoiceId: null,
+        estado: 'pendiente',
+      ));
+    }
+  }
+
+  void _closeTable(int table) async {
+    final tableProvider = context.read<TableProvider>();
+    final cart = context.read<CartProvider>();
+    final l10n = AppLocalizations.of(context)!;
+
+    if (tableProvider.currentTable == table) {
+      await cart.clearCart();
+      tableProvider.clearSelection();
+    }
+    await tableProvider.closeTable(table);
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Mesa $table ${l10n.roles_title}')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final cart = context.watch<CartProvider>();
+    final tableProvider = context.watch<TableProvider>();
 
     if (_showPaymentSheet && _paymentRequest != null) {
       return Scaffold(
@@ -489,8 +696,15 @@ class _SaleScreenState extends State<SaleScreen> {
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
       appBar: AppBar(
-        title: Text(l10n.sale_title),
+        title: Text(tableProvider.hasActiveTable
+            ? '${l10n.settings_ticket_section} ${tableProvider.currentTable}'
+            : l10n.sale_title),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.table_restaurant),
+            tooltip: l10n.settings_ticket_section,
+            onPressed: _showTableDialog,
+          ),
           IconButton(
             icon: Icon(_isCatalogMode ? Icons.edit : Icons.store),
             tooltip: _isCatalogMode ? l10n.manual_entry_tooltip : l10n.catalog_mode_tooltip,
@@ -664,6 +878,12 @@ class _SaleScreenState extends State<SaleScreen> {
               IconButton.filled(
                 onPressed: _agregarProducto,
                 icon: const Icon(Icons.add),
+              ),
+              const SizedBox(width: 4),
+              IconButton(
+                icon: const Icon(Icons.qr_code_scanner),
+                tooltip: l10n.scan_product,
+                onPressed: _scanProductQrForCart,
               ),
             ],
           ),
