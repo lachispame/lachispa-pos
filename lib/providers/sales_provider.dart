@@ -302,10 +302,11 @@ class SalesProvider extends ChangeNotifier {
 
   Future<List<Map<String, dynamic>>> getSalesPerDay(int days) async {
     final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
     final result = <Map<String, dynamic>>[];
 
     for (int i = days - 1; i >= 0; i--) {
-      final day = DateTime(now.year, now.month, now.day - i);
+      final day = today.subtract(Duration(days: i));
       final nextDay = day.add(const Duration(days: 1));
       final daySales = await getSalesForPeriod(day, nextDay);
       final totalSats = daySales.fold<int>(0, (sum, s) => sum + s.totalSats);

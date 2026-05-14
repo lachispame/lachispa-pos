@@ -30,10 +30,13 @@ class PrintService {
   static final PrintService instance = PrintService._();
   PrintService._();
 
+  static String _safeSubstring(String s, int max) =>
+      s.length <= max ? s : s.substring(0, max);
+
   Future<void> shareReceipt(Sale sale, AppLocalizations l10n) async {
     final text = generateReceiptText(sale, l10n);
     final dir = await getTemporaryDirectory();
-    final file = File('${dir.path}/ticket_${sale.id.substring(0, 8)}.txt');
+    final file = File('${dir.path}/ticket_${_safeSubstring(sale.id, 8)}.txt');
     await file.writeAsString(text);
     await Share.shareXFiles(
       [XFile(file.path)],

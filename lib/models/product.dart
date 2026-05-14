@@ -1,6 +1,8 @@
 import 'package:uuid/uuid.dart';
 
 class Product {
+  static final _uuid = Uuid();
+
   final String id;
   final String nombre;
   final double precio;
@@ -24,7 +26,7 @@ class Product {
     String? categoria,
   }) {
     return Product(
-      id: const Uuid().v4(),
+      id: Product._uuid.v4(),
       nombre: nombre,
       precio: precio,
       moneda: moneda,
@@ -51,7 +53,7 @@ class Product {
       precio: (map['precio'] as num).toDouble(),
       moneda: map['moneda'] as String,
       categoria: map['categoria'] as String?,
-      createdAt: DateTime.parse(map['created_at'] as String),
+      createdAt: DateTime.tryParse(map['created_at'] as String? ?? '') ?? DateTime.now(),
     );
   }
 

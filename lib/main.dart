@@ -16,6 +16,7 @@ import 'screens/sale_screen.dart';
 import 'screens/history_screen.dart';
 import 'screens/settings_screen.dart';
 import 'screens/about_screen.dart';
+import 'models/sale.dart';
 import 'screens/product_catalog_screen.dart';
 import 'screens/stats_screen.dart';
 import 'screens/receipt_screen.dart';
@@ -84,8 +85,11 @@ class POSApp extends StatelessWidget {
           '/catalog': (_) => const ProductCatalogScreen(),
           '/stats': (_) => const StatsScreen(),
           '/receipt': (context) {
-            final sale = ModalRoute.of(context)!.settings.arguments as dynamic;
-            return ReceiptScreen(sale: sale);
+            final args = ModalRoute.of(context)?.settings.arguments;
+            if (args is Sale) {
+              return ReceiptScreen(sale: args);
+            }
+            return const SaleScreen();
           },
             },
           );

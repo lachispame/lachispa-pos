@@ -27,7 +27,17 @@ class ReceiptScreen extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.share),
             tooltip: l10n.receipt_share_tooltip,
-            onPressed: () => PrintService.instance.shareReceipt(sale, l10n),
+            onPressed: () async {
+              try {
+                await PrintService.instance.shareReceipt(sale, l10n);
+              } catch (e) {
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Error: $e')),
+                  );
+                }
+              }
+            },
           ),
         ],
       ),
@@ -142,7 +152,17 @@ class ReceiptScreen extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton.icon(
-                onPressed: () => PrintService.instance.shareReceipt(sale, l10n),
+                onPressed: () async {
+                  try {
+                    await PrintService.instance.shareReceipt(sale, l10n);
+                  } catch (e) {
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Error: $e')),
+                      );
+                    }
+                  }
+                },
                 icon: const Icon(Icons.share),
                 label: Text(l10n.receipt_share),
                 style: ElevatedButton.styleFrom(

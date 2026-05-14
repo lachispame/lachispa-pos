@@ -114,7 +114,7 @@ class ProductProvider extends ChangeNotifier {
       final nombre = p['nombre'] as String?;
       final precio = (p['precio'] as num?)?.toDouble();
       final moneda = p['moneda'] as String? ?? 'USD';
-      if (nombre == null || nombre.isEmpty || precio == null || precio <= 0) {
+      if (nombre == null || nombre.isEmpty || precio == null || !precio.isFinite || precio <= 0) {
         continue;
       }
 
@@ -142,7 +142,10 @@ class ProductProvider extends ChangeNotifier {
     );
     if (result == null || result.files.isEmpty) return null;
 
-    final file = File(result.files.first.path!);
+    final path = result.files.first.path;
+    if (path == null) return null;
+
+    final file = File(path);
     try {
       return json.decode(await file.readAsString()) as Map<String, dynamic>;
     } catch (_) {

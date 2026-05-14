@@ -17,7 +17,9 @@ class _ProductCatalogScreenState extends State<ProductCatalogScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<ProductProvider>().loadProducts();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<ProductProvider>().loadProducts();
+    });
   }
 
   void _showProductForm({Product? product}) {

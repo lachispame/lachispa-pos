@@ -166,6 +166,7 @@ class _SaleScreenState extends State<SaleScreen> {
 
   void _agregarProductoFromCatalog(Product product) async {
     final cart = context.read<CartProvider>();
+    final l10n = AppLocalizations.of(context)!;
     if (!_canAddCurrency(product.moneda)) {
       _showCurrencyMismatchDialog();
       return;
@@ -173,11 +174,22 @@ class _SaleScreenState extends State<SaleScreen> {
     if (Moneda.fromCodigo(product.moneda) != cart.monedaVenta) {
       cart.setMoneda(Moneda.fromCodigo(product.moneda));
     }
-    await cart.addItem(
-      nombre: product.nombre,
-      precio: product.precio,
-      cantidad: 1,
-    );
+    try {
+      await cart.addItem(
+        nombre: product.nombre,
+        precio: product.precio,
+        cantidad: 1,
+      );
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('${l10n.error_generic}: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 
   Future<void> _crearInvoice() async {
@@ -304,6 +316,19 @@ class _SaleScreenState extends State<SaleScreen> {
               ),
             );
           }
+
+          final salesProvider = context.read<SalesProvider>();
+          final pendingSaleId = await salesProvider.createPendingSale(
+            userId: user.id,
+            userNombre: user.nombre,
+            items: cart.items,
+            totalFiat: cart.totalFiat,
+            moneda: cart.monedaVenta.codigo,
+            totalSats: cart.totalSats,
+            rateUsado: cart.rateUsado,
+            invoiceId: invoiceResult.paymentHash,
+          );
+          _pendingSaleId = pendingSaleId;
 
           _esperarPago(invoiceResult.paymentHash, _pendingSaleId!);
         } catch (e) {
