@@ -3,16 +3,17 @@ import 'package:provider/provider.dart';
 import '../core/theme/app_theme.dart';
 import '../core/services/lachispa_api_service.dart';
 import '../core/services/nfc_payment_service.dart';
-import '../models/sale.dart';
-import '../models/sale_item.dart';
+import '../models/product.dart';
+import '../core/constants/currencies.dart';
 import '../providers/auth_provider.dart';
 import '../providers/cart_provider.dart';
 import '../providers/sales_provider.dart';
-import '../providers/table_provider.dart';
+import '../providers/product_provider.dart';
 import '../widgets/cart_item_tile.dart';
 import '../widgets/total_display.dart';
 import '../widgets/currency_selector.dart';
 import '../widgets/qr_display.dart';
+import '../widgets/app_drawer.dart';
 import '../l10n/generated/app_localizations.dart';
 
 class SaleScreen extends StatefulWidget {
@@ -25,10 +26,12 @@ class SaleScreen extends StatefulWidget {
 class _SaleScreenState extends State<SaleScreen> {
   final _productoController = TextEditingController();
   final _precioController = TextEditingController();
+  final _searchController = TextEditingController();
   bool _showPaymentSheet = false;
   bool _isReadingNfc = false;
+  bool _isCatalogMode = false;
+  String _searchQuery = '';
   String? _paymentRequest;
-  String? _paymentHash;
   String? _pendingSaleId;
 
   final NfcPaymentService _nfcService = NfcPaymentService();
@@ -36,14 +39,82 @@ class _SaleScreenState extends State<SaleScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<TableProvider>().loadSavedTables();
+    context.read<ProductProvider>().loadProducts();
+    _checkRecoverableCart();
+  }
+
+  Future<void> _checkRecoverableCart() async {
+    final cartProvider = context.read<CartProvider>();
+    await cartProvider.initSession();
+    if (cartProvider.hasItems && mounted) {
+      _showRecoveryDialog();
+    }
+  }
+
+  void _showRecoveryDialog() {
+    final l10n = AppLocalizations.of(context)!;
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: AppTheme.cardColor,
+        title: Text(l10n.pending_sale_title),
+        content: Text(l10n.pending_sale_confirm),
+        actions: [
+          TextButton(
+            onPressed: () {
+              context.read<CartProvider>().clearCart();
+              Navigator.pop(ctx);
+            },
+            child: Text(l10n.discard_sale),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text(l10n.retomar),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
   void dispose() {
     _productoController.dispose();
     _precioController.dispose();
+    _searchController.dispose();
     super.dispose();
+  }
+
+  void _toggleMode() {
+    setState(() => _isCatalogMode = !_isCatalogMode);
+  }
+
+  bool _canAddCurrency(String monedaCodigo) {
+    final cart = context.read<CartProvider>();
+    if (!cart.hasItems) return true;
+    return cart.monedaVenta.codigo == monedaCodigo;
+  }
+
+  void _showCurrencyMismatchDialog() {
+    final l10n = AppLocalizations.of(context)!;
+    final cart = context.read<CartProvider>();
+    final currencyCode = cart.hasItems ? cart.monedaVenta.codigo : '';
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: AppTheme.cardColor,
+        title: Text(l10n.currency_mismatch_title),
+        content: Text(
+          l10n.currency_mismatch_message(currencyCode),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text(l10n.got_it),
+          ),
+        ],
+      ),
+    );
   }
 
   void _agregarProducto() async {
@@ -66,8 +137,14 @@ class _SaleScreenState extends State<SaleScreen> {
       return;
     }
 
+    final cart = context.read<CartProvider>();
+    if (!_canAddCurrency(cart.monedaVenta.codigo)) {
+      _showCurrencyMismatchDialog();
+      return;
+    }
+
     try {
-      await context.read<CartProvider>().addItem(
+      await cart.addItem(
         nombre: nombre,
         precio: precio,
         cantidad: 1,
@@ -75,6 +152,34 @@ class _SaleScreenState extends State<SaleScreen> {
 
       _productoController.clear();
       _precioController.clear();
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('${l10n.error_generic}: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  void _agregarProductoFromCatalog(Product product) async {
+    final cart = context.read<CartProvider>();
+    final l10n = AppLocalizations.of(context)!;
+    if (!_canAddCurrency(product.moneda)) {
+      _showCurrencyMismatchDialog();
+      return;
+    }
+    if (Moneda.fromCodigo(product.moneda) != cart.monedaVenta) {
+      cart.setMoneda(Moneda.fromCodigo(product.moneda));
+    }
+    try {
+      await cart.addItem(
+        nombre: product.nombre,
+        precio: product.precio,
+        cantidad: 1,
+      );
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -116,7 +221,7 @@ class _SaleScreenState extends State<SaleScreen> {
 
       final invoice = await LachispaApiService.instance.createInvoice(
         amountSats: cart.totalSats,
-        memo: 'Venta POS - ${user.nombre}',
+        memo: l10n.invoice_memo(user.nombre),
       );
 
       if (invoice.paymentRequest.isEmpty) {
@@ -136,7 +241,6 @@ class _SaleScreenState extends State<SaleScreen> {
 
       _pendingSaleId = pendingSaleId;
       _paymentRequest = invoice.paymentRequest;
-      _paymentHash = invoice.paymentHash;
 
       LachispaApiService.instance.connectWebSocket(user.lndhubCreds!);
 
@@ -182,12 +286,12 @@ class _SaleScreenState extends State<SaleScreen> {
         print('LNURL received from card: $lnurl');
 
         try {
-          final invoiceResult = await LachispaApiService.instance
-              .createInvoiceForLnurl(
-                lnurl: lnurl,
-                amountSats: cart.totalSats,
-                memo: 'Venta POS - ${user.nombre}',
-              );
+              final invoiceResult = await LachispaApiService.instance
+                  .createInvoiceForLnurl(
+                    lnurl: lnurl,
+                    amountSats: cart.totalSats,
+                    memo: l10n.invoice_memo(user.nombre),
+                  );
 
           if (invoiceResult == null) {
             if (mounted) {
@@ -206,8 +310,8 @@ class _SaleScreenState extends State<SaleScreen> {
 
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Invoice creada. Esperando pago...'),
+              SnackBar(
+                content: Text(l10n.waiting_for_payment),
                 backgroundColor: Colors.green,
               ),
             );
@@ -266,30 +370,33 @@ class _SaleScreenState extends State<SaleScreen> {
       )) {
         if (!mounted) return;
 
-        if (settled) {
-          await salesProvider.markSaleAsCompleted(saleId);
+          if (settled) {
+            await salesProvider.markSaleAsCompleted(saleId);
 
-          await cart.clearCart();
-          LachispaApiService.instance.disconnect();
+            final sale = await salesProvider.getSaleById(saleId);
 
-          if (mounted) {
-            setState(() {
-              _showPaymentSheet = false;
-              _isReadingNfc = false;
-              _pendingSaleId = null;
-            });
+            await cart.clearCart();
+            LachispaApiService.instance.disconnect();
 
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(l10n.payment_received),
-                backgroundColor: Colors.green,
-              ),
-            );
+            if (mounted) {
+              setState(() {
+                _showPaymentSheet = false;
+                _isReadingNfc = false;
+                _pendingSaleId = null;
+              });
 
-            Navigator.of(context).popUntil((route) => route.isFirst);
+              if (sale != null && mounted) {
+                Navigator.pushReplacementNamed(
+                  context,
+                  '/receipt',
+                  arguments: sale,
+                );
+              } else {
+                Navigator.of(context).popUntil((route) => route.isFirst);
+              }
+            }
+            return;
           }
-          return;
-        }
       }
     } catch (e) {
       if (mounted) {
@@ -303,146 +410,10 @@ class _SaleScreenState extends State<SaleScreen> {
     }
   }
 
-  void _showTableDialog() {
-    final tableProvider = context.read<TableProvider>();
-    final l10n = AppLocalizations.of(context)!;
-
-    showDialog(
-      context: context,
-      builder: (ctx) {
-        final tables = tableProvider.activeTables;
-        int selectedTable = tableProvider.currentTable ?? (tables.isNotEmpty ? tables.first : 1);
-        final controller = TextEditingController(text: selectedTable.toString());
-
-        return StatefulBuilder(
-          builder: (ctx, setDialogState) => AlertDialog(
-            backgroundColor: AppTheme.cardColor,
-            title: Text('Mesas'),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: controller,
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                    labelText: 'Número de mesa',
-                    prefixIcon: Icon(Icons.table_restaurant),
-                  ),
-                  onChanged: (v) {
-                    final n = int.tryParse(v);
-                    if (n != null) setDialogState(() => selectedTable = n);
-                  },
-                ),
-                if (tables.isNotEmpty) ...[
-                  const SizedBox(height: 16),
-                  const Text('Mesas activas:', style: TextStyle(fontSize: 13, color: Colors.grey)),
-                  const SizedBox(height: 8),
-                  Wrap(
-                    spacing: 8,
-                    children: tables.map((t) {
-                      final itemCount = tableProvider.itemsForTable(t).length;
-                      return ActionChip(
-                        label: Text('Mesa $t ($itemCount)'),
-                        onPressed: () {
-                          Navigator.pop(ctx);
-                          _selectTable(t);
-                        },
-                      );
-                    }).toList(),
-                  ),
-                ],
-              ],
-            ),
-            actions: [
-              if (tableProvider.hasActiveTable)
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(ctx);
-                    _closeTable(tableProvider.currentTable!);
-                  },
-                  child: const Text('Cerrar mesa', style: TextStyle(color: Colors.red)),
-                ),
-              TextButton(
-                onPressed: () => Navigator.pop(ctx),
-                child: Text(l10n.cancel_button),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(ctx);
-                  _selectTable(selectedTable);
-                },
-                child: const Text('Seleccionar'),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Future<void> _selectTable(int table) async {
-    final tableProvider = context.read<TableProvider>();
-    final cart = context.read<CartProvider>();
-
-    if (tableProvider.currentTable != null && tableProvider.currentTable != table) {
-      await tableProvider.saveCartToTable(
-        tableProvider.currentTable!,
-        cart.items,
-        cart.monedaVenta.codigo,
-      );
-    }
-
-    await tableProvider.selectTable(table);
-
-    final items = tableProvider.itemsForTable(table);
-    if (items.isNotEmpty) {
-      cart.loadFromPendingSale(Sale(
-        id: '',
-        userId: '',
-        userNombre: '',
-        fecha: DateTime.now(),
-        items: items
-            .map((ci) => SaleItem(
-                  saleId: '',
-                  nombre: ci.nombre,
-                  precioUnitario: ci.precioUnitario,
-                  moneda: ci.moneda,
-                  cantidad: ci.cantidad,
-                  subtotalFiat: ci.subtotalFiat,
-                  subtotalSats: ci.subtotalSats,
-                ))
-            .toList(),
-        totalFiat: items.fold(0.0, (s, i) => s + i.subtotalFiat),
-        moneda: items.first.moneda,
-        totalSats: items.fold(0, (s, i) => s + i.subtotalSats),
-        rateUsado: 0,
-        invoiceId: null,
-        estado: 'pendiente',
-      ));
-    }
-  }
-
-  void _closeTable(int table) async {
-    final tableProvider = context.read<TableProvider>();
-    final cart = context.read<CartProvider>();
-
-    if (tableProvider.currentTable == table) {
-      await cart.clearCart();
-      tableProvider.clearSelection();
-    }
-    await tableProvider.closeTable(table);
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Mesa $table cerrada')),
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final cart = context.watch<CartProvider>();
-    final tableProvider = context.watch<TableProvider>();
 
     if (_showPaymentSheet && _paymentRequest != null) {
       return Scaffold(
@@ -518,113 +489,273 @@ class _SaleScreenState extends State<SaleScreen> {
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
       appBar: AppBar(
-        title: Text(tableProvider.hasActiveTable
-            ? 'Mesa ${tableProvider.currentTable}'
-            : l10n.sale_title),
+        title: Text(l10n.sale_title),
         actions: [
           IconButton(
-            icon: const Icon(Icons.table_restaurant),
-            tooltip: 'Mesas',
-            onPressed: _showTableDialog,
+            icon: Icon(_isCatalogMode ? Icons.edit : Icons.store),
+            tooltip: _isCatalogMode ? l10n.manual_entry_tooltip : l10n.catalog_mode_tooltip,
+            onPressed: _toggleMode,
           ),
-          if (cart.hasItems)
+          if (!_isCatalogMode && cart.hasItems)
             IconButton(
               icon: const Icon(Icons.delete_sweep),
               onPressed: () => cart.clearCart(),
             ),
         ],
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Row(
-              children: [
-                Expanded(
-                  flex: 2,
-                  child: TextField(
-                    controller: _productoController,
-                    decoration: const InputDecoration(
-                      labelText: 'Producto',
-                      hintText: 'Nombre',
-                    ),
-                    onSubmitted: (_) => _agregarProducto(),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: TextField(
-                    controller: _precioController,
-                    decoration: const InputDecoration(labelText: 'Precio'),
-                    keyboardType: TextInputType.number,
-                    onSubmitted: (_) => _agregarProducto(),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                IconButton.filled(
-                  onPressed: _agregarProducto,
-                  icon: const Icon(Icons.add),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: CurrencySelector(
-              selected: cart.monedaVenta,
-              onChanged: (m) => cart.setMoneda(m),
-            ),
-          ),
-          const SizedBox(height: 8),
-          Expanded(
-            child: cart.hasItems
-                ? ListView.builder(
-                    itemCount: cart.items.length,
-                    itemBuilder: (context, index) {
-                      final item = cart.items[index];
-                      return CartItemTile(
-                        nombre: item.nombre,
-                        precioUnitario: item.precioUnitario,
-                        moneda: item.moneda,
-                        cantidad: item.cantidad,
-                        subtotal: item.subtotalFiat,
-                        subtotalSats: item.subtotalSats,
-                        onDecrement: item.cantidad > 1
-                            ? () =>
-                                  cart.updateQuantity(index, item.cantidad - 1)
-                            : null,
-                        onIncrement: () =>
-                            cart.updateQuantity(index, item.cantidad + 1),
-                        onDelete: () => cart.removeItem(index),
-                      );
-                    },
-                  )
-                : const Center(
-                    child: Text(
-                      'Agregue productos',
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                  ),
-          ),
-          TotalDisplay(
-            totalFiat: cart.totalFiat,
-            moneda: cart.monedaVenta.codigo,
-            totalSats: cart.totalSats,
-            rateUsado: cart.rateUsado,
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: cart.hasItems ? _crearInvoice : null,
-                icon: const Icon(Icons.payment),
-                label: Text(l10n.cobrar),
-              ),
-            ),
-          ),
-        ],
-      ),
+      drawer: const AppDrawer(),
+      body: _isCatalogMode
+          ? _buildCatalogMode(cart, l10n)
+          : _buildDirectMode(cart, l10n),
     );
+  }
+
+  Widget _buildCatalogMode(CartProvider cart, AppLocalizations l10n) {
+    final productProvider = context.watch<ProductProvider>();
+    final currencyCode = cart.monedaVenta.codigo;
+
+    final productsInCurrency = productProvider.products
+        .where((p) => p.moneda == currencyCode)
+        .toList();
+    final filtered = _searchQuery.isEmpty
+        ? productsInCurrency
+        : productsInCurrency
+            .where((p) =>
+                p.nombre.toLowerCase().contains(_searchQuery.toLowerCase()))
+            .toList();
+
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+          child: TextField(
+            controller: _searchController,
+            decoration: InputDecoration(
+              hintText: l10n.search_products_hint,
+              prefixIcon: const Icon(Icons.search),
+            ),
+            onChanged: (v) => setState(() => _searchQuery = v),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: CurrencySelector(
+            selected: cart.monedaVenta,
+            onChanged: cart.hasItems
+                ? (m) {
+                    if (m.codigo != cart.monedaVenta.codigo) {
+                      _showCurrencyMismatchDialog();
+                    }
+                  }
+                : (m) => cart.setMoneda(m),
+          ),
+        ),
+        const SizedBox(height: 8),
+        Expanded(
+          child: filtered.isEmpty
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.inventory_2,
+                          size: 48, color: Colors.grey[600]),
+                      const SizedBox(height: 12),
+                      Text(
+                        productProvider.products.any(
+                                (p) => p.moneda == currencyCode)
+                            ? l10n.no_results_in_currency(currencyCode)
+                            : l10n.no_products_in_currency(currencyCode),
+                        style: TextStyle(color: Colors.grey[500]),
+                      ),
+                      if (!productProvider
+                          .products.any((p) => p.moneda == currencyCode))
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8),
+                          child: Text(
+                            l10n.try_other_currency,
+                            style: TextStyle(
+                                fontSize: 12, color: Colors.grey[600]),
+                          ),
+                        ),
+                    ],
+                  ),
+                )
+              : GridView.builder(
+                  padding: const EdgeInsets.all(16),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    childAspectRatio: 1.6,
+                    crossAxisSpacing: 8,
+                    mainAxisSpacing: 8,
+                  ),
+                  itemCount: filtered.length,
+                  itemBuilder: (context, index) {
+                    final p = filtered[index];
+                    final symbol = _monedaSymbol(p.moneda);
+                    return Card(
+                      child: InkWell(
+                        onTap: () => _agregarProductoFromCatalog(p),
+                        borderRadius: BorderRadius.circular(16),
+                        child: Padding(
+                          padding: const EdgeInsets.all(12),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                p.nombre,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 14,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                '$symbol${p.precio.toStringAsFixed(2)}',
+                                style: TextStyle(
+                                  color: AppTheme.primaryColor,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+        ),
+        if (cart.hasItems) _buildBottomBar(cart, l10n),
+      ],
+    );
+  }
+
+  Widget _buildDirectMode(CartProvider cart, AppLocalizations l10n) {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
+              Expanded(
+                flex: 2,
+                child: TextField(
+                  controller: _productoController,
+                  decoration: InputDecoration(
+                    labelText: l10n.product_label,
+                    hintText: l10n.name_hint,
+                  ),
+                  onSubmitted: (_) => _agregarProducto(),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: TextField(
+                  controller: _precioController,
+                  decoration: InputDecoration(labelText: l10n.price_label),
+                  keyboardType: TextInputType.number,
+                  onSubmitted: (_) => _agregarProducto(),
+                ),
+              ),
+              const SizedBox(width: 8),
+              IconButton.filled(
+                onPressed: _agregarProducto,
+                icon: const Icon(Icons.add),
+              ),
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: CurrencySelector(
+            selected: cart.monedaVenta,
+            onChanged: cart.hasItems
+                ? (m) {
+                    if (m.codigo != cart.monedaVenta.codigo) {
+                      _showCurrencyMismatchDialog();
+                    }
+                  }
+                : (m) => cart.setMoneda(m),
+          ),
+        ),
+        const SizedBox(height: 8),
+        Expanded(
+          child: cart.hasItems
+              ? ListView.builder(
+                  itemCount: cart.items.length,
+                  itemBuilder: (context, index) {
+                    final item = cart.items[index];
+                    return CartItemTile(
+                      nombre: item.nombre,
+                      precioUnitario: item.precioUnitario,
+                      moneda: item.moneda,
+                      cantidad: item.cantidad,
+                      subtotal: item.subtotalFiat,
+                      subtotalSats: item.subtotalSats,
+                      onDecrement: item.cantidad > 1
+                          ? () =>
+                                cart.updateQuantity(index, item.cantidad - 1)
+                          : null,
+                      onIncrement: () =>
+                          cart.updateQuantity(index, item.cantidad + 1),
+                      onDelete: () => cart.removeItem(index),
+                    );
+                  },
+                )
+              : Center(
+                  child: Text(
+                    l10n.add_products_hint,
+                    style: const TextStyle(color: Colors.grey),
+                  ),
+                ),
+        ),
+        if (cart.hasItems) _buildBottomBar(cart, l10n),
+      ],
+    );
+  }
+
+  Widget _buildBottomBar(CartProvider cart, AppLocalizations l10n) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        TotalDisplay(
+          totalFiat: cart.totalFiat,
+          moneda: cart.monedaVenta.codigo,
+          totalSats: cart.totalSats,
+          rateUsado: cart.rateUsado,
+        ),
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: SizedBox(
+            width: double.infinity,
+            child: ElevatedButton.icon(
+              onPressed: _crearInvoice,
+              icon: const Icon(Icons.payment),
+              label: Text(l10n.cobrar),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  String _monedaSymbol(String codigo) {
+    switch (codigo) {
+      case 'USD':
+        return '\$';
+      case 'EUR':
+        return '€';
+      case 'CUP':
+        return '\$';
+      case 'MLC':
+        return 'MLC ';
+      case 'SAT':
+        return '';
+      default:
+        return '\$';
+    }
   }
 }
