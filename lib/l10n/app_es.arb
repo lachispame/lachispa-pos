@@ -255,5 +255,9 @@
   "export_unknown": "Desconocido",
   "export_imported_name": "Importado",
 
-  "export_catalog_subject": "Catálogo de productos LaChispaPOS"
+  "export_catalog_subject": "Catálogo de productos LaChispaPOS",
+
+  "table_label": "Mesa",
+  "tables_title": "Mesas",
+  "tables_active_title": "Mesas activas"
 }

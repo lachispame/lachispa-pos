@@ -497,7 +497,7 @@ class _SaleScreenState extends State<SaleScreen> {
         return StatefulBuilder(
           builder: (ctx, setDialogState) => AlertDialog(
             backgroundColor: AppTheme.cardColor,
-            title: Text(l10n.roles_title),
+            title: Text(l10n.tables_title),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -505,7 +505,7 @@ class _SaleScreenState extends State<SaleScreen> {
                   controller: controller,
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
-                    labelText: l10n.settings_ticket_section,
+                    labelText: l10n.table_label,
                     prefixIcon: const Icon(Icons.table_restaurant),
                   ),
                   onChanged: (v) {
@@ -515,14 +515,14 @@ class _SaleScreenState extends State<SaleScreen> {
                 ),
                 if (tables.isNotEmpty) ...[
                   const SizedBox(height: 16),
-                  Text(l10n.history_title, style: const TextStyle(fontSize: 13, color: Colors.grey)),
+                  Text(l10n.tables_active_title, style: const TextStyle(fontSize: 13, color: Colors.grey)),
                   const SizedBox(height: 8),
                   Wrap(
                     spacing: 8,
                     children: tables.map((t) {
                       final itemCount = tableProvider.itemsForTable(t).length;
                       return ActionChip(
-                        label: Text('${l10n.settings_ticket_section} $t ($itemCount)'),
+                        label: Text('${l10n.table_label} $t ($itemCount)'),
                         onPressed: () {
                           Navigator.pop(ctx);
                           _selectTable(t);
@@ -611,7 +611,7 @@ class _SaleScreenState extends State<SaleScreen> {
     await tableProvider.closeTable(table);
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Mesa $table ${l10n.roles_title}')),
+        SnackBar(content: Text('${l10n.table_label} $table')),
       );
     }
   }
@@ -697,12 +697,12 @@ class _SaleScreenState extends State<SaleScreen> {
       backgroundColor: AppTheme.backgroundColor,
       appBar: AppBar(
         title: Text(tableProvider.hasActiveTable
-            ? '${l10n.settings_ticket_section} ${tableProvider.currentTable}'
+            ? '${l10n.table_label} ${tableProvider.currentTable}'
             : l10n.sale_title),
         actions: [
           IconButton(
             icon: const Icon(Icons.table_restaurant),
-            tooltip: l10n.settings_ticket_section,
+            tooltip: l10n.table_label,
             onPressed: _showTableDialog,
           ),
           IconButton(

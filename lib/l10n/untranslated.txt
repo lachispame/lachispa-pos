@@ -1,1 +1,37 @@
-{}
+{
+  "de": [
+    "table_label",
+    "tables_title",
+    "tables_active_title"
+  ],
+
+  "fr": [
+    "table_label",
+    "tables_title",
+    "tables_active_title"
+  ],
+
+  "it": [
+    "table_label",
+    "tables_title",
+    "tables_active_title"
+  ],
+
+  "ja": [
+    "table_label",
+    "tables_title",
+    "tables_active_title"
+  ],
+
+  "pt": [
+    "table_label",
+    "tables_title",
+    "tables_active_title"
+  ],
+
+  "ru": [
+    "table_label",
+    "tables_title",
+    "tables_active_title"
+  ]
+}

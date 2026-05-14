@@ -725,4 +725,13 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get export_catalog_subject => 'Catálogo de productos LaChispaPOS';
+
+  @override
+  String get table_label => 'Mesa';
+
+  @override
+  String get tables_title => 'Mesas';
+
+  @override
+  String get tables_active_title => 'Mesas activas';
 }

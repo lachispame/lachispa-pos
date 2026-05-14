@@ -1507,6 +1507,24 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Catálogo de productos LaChispaPOS'**
   String get export_catalog_subject;
+
+  /// No description provided for @table_label.
+  ///
+  /// In es, this message translates to:
+  /// **'Mesa'**
+  String get table_label;
+
+  /// No description provided for @tables_title.
+  ///
+  /// In es, this message translates to:
+  /// **'Mesas'**
+  String get tables_title;
+
+  /// No description provided for @tables_active_title.
+  ///
+  /// In es, this message translates to:
+  /// **'Mesas activas'**
+  String get tables_active_title;
 }
 
 class _AppLocalizationsDelegate

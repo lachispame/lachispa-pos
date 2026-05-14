@@ -254,5 +254,9 @@
   "export_unknown": "Unknown",
   "export_imported_name": "Imported",
 
-  "export_catalog_subject": "LaChispaPOS Product Catalog"
+  "export_catalog_subject": "LaChispaPOS Product Catalog",
+
+  "table_label": "Table",
+  "tables_title": "Tables",
+  "tables_active_title": "Active Tables"
 }
