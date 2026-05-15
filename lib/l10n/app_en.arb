@@ -258,12 +258,6 @@
 
   "table_label": "Table",
   "tables_title": "Tables",
-  "tables_active_title": "Active Tables",
+  "tables_active_title": "Active Tables"
 
-  "catalog_qr_export": "Export QR",
-  "catalog_qr_page": "QR {current} of {total}",
-  "catalog_qr_scan_button": "Scan QR",
-  "catalog_qr_progress": "Scanned QR {current} of {total}",
-  "catalog_qr_done": "Catalog complete!",
-  "catalog_qr_scan_choice": "Import from file or scan QR"
 }

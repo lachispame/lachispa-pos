@@ -1525,42 +1525,6 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Mesas activas'**
   String get tables_active_title;
-
-  /// No description provided for @catalog_qr_export.
-  ///
-  /// In es, this message translates to:
-  /// **'Exportar QR'**
-  String get catalog_qr_export;
-
-  /// No description provided for @catalog_qr_page.
-  ///
-  /// In es, this message translates to:
-  /// **'QR {current} de {total}'**
-  String catalog_qr_page(Object current, Object total);
-
-  /// No description provided for @catalog_qr_scan_button.
-  ///
-  /// In es, this message translates to:
-  /// **'Escanear QR'**
-  String get catalog_qr_scan_button;
-
-  /// No description provided for @catalog_qr_progress.
-  ///
-  /// In es, this message translates to:
-  /// **'Escaneado QR {current} de {total}'**
-  String catalog_qr_progress(Object current, Object total);
-
-  /// No description provided for @catalog_qr_done.
-  ///
-  /// In es, this message translates to:
-  /// **'¡Catálogo completo!'**
-  String get catalog_qr_done;
-
-  /// No description provided for @catalog_qr_scan_choice.
-  ///
-  /// In es, this message translates to:
-  /// **'Importar desde archivo o escanear QR'**
-  String get catalog_qr_scan_choice;
 }
 
 class _AppLocalizationsDelegate

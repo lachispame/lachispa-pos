@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../l10n/generated/app_localizations.dart';
@@ -9,7 +8,6 @@ import '../providers/cart_provider.dart';
 import '../providers/sales_provider.dart';
 import '../providers/product_provider.dart';
 import '../widgets/app_drawer.dart';
-import '../widgets/catalog_qr_scanner.dart';
 
 class HomeDependienteScreen extends StatefulWidget {
   const HomeDependienteScreen({super.key});
@@ -134,38 +132,7 @@ class _HomeDependienteScreenState extends State<HomeDependienteScreen> {
     final l10n = AppLocalizations.of(context)!;
     final productProvider = context.read<ProductProvider>();
 
-    final source = await showDialog<String>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: AppTheme.cardColor,
-        title: Text(l10n.drawer_import_catalog),
-        content: Text(l10n.catalog_qr_scan_choice),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, 'file'),
-            child: Text(l10n.import_button),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(ctx, 'qr'),
-            child: Text(l10n.catalog_qr_scan_button),
-          ),
-        ],
-      ),
-    );
-
-    if (source == null || !mounted) return;
-
-    Map<String, dynamic>? data;
-
-    if (source == 'file') {
-      data = await productProvider.pickCatalogJson();
-    } else {
-      data = await Navigator.push<Map<String, dynamic>>(
-        context,
-        MaterialPageRoute(builder: (_) => const CatalogQrImportScanner()),
-      );
-    }
-
+    final data = await productProvider.pickCatalogJson();
     if (data == null || !mounted) return;
 
     final productos = data['productos'] as List<dynamic>?;

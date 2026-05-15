@@ -259,12 +259,6 @@
 
   "table_label": "Mesa",
   "tables_title": "Mesas",
-  "tables_active_title": "Mesas activas",
+  "tables_active_title": "Mesas activas"
 
-  "catalog_qr_export": "Exportar QR",
-  "catalog_qr_page": "QR {current} de {total}",
-  "catalog_qr_scan_button": "Escanear QR",
-  "catalog_qr_progress": "Escaneado QR {current} de {total}",
-  "catalog_qr_done": "¡Catálogo completo!",
-  "catalog_qr_scan_choice": "Importar desde archivo o escanear QR"
 }

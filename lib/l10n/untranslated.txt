@@ -2,72 +2,36 @@
   "de": [
     "table_label",
     "tables_title",
-    "tables_active_title",
-    "catalog_qr_export",
-    "catalog_qr_page",
-    "catalog_qr_scan_button",
-    "catalog_qr_progress",
-    "catalog_qr_done",
-    "catalog_qr_scan_choice"
+    "tables_active_title"
   ],
 
   "fr": [
     "table_label",
     "tables_title",
-    "tables_active_title",
-    "catalog_qr_export",
-    "catalog_qr_page",
-    "catalog_qr_scan_button",
-    "catalog_qr_progress",
-    "catalog_qr_done",
-    "catalog_qr_scan_choice"
+    "tables_active_title"
   ],
 
   "it": [
     "table_label",
     "tables_title",
-    "tables_active_title",
-    "catalog_qr_export",
-    "catalog_qr_page",
-    "catalog_qr_scan_button",
-    "catalog_qr_progress",
-    "catalog_qr_done",
-    "catalog_qr_scan_choice"
+    "tables_active_title"
   ],
 
   "ja": [
     "table_label",
     "tables_title",
-    "tables_active_title",
-    "catalog_qr_export",
-    "catalog_qr_page",
-    "catalog_qr_scan_button",
-    "catalog_qr_progress",
-    "catalog_qr_done",
-    "catalog_qr_scan_choice"
+    "tables_active_title"
   ],
 
   "pt": [
     "table_label",
     "tables_title",
-    "tables_active_title",
-    "catalog_qr_export",
-    "catalog_qr_page",
-    "catalog_qr_scan_button",
-    "catalog_qr_progress",
-    "catalog_qr_done",
-    "catalog_qr_scan_choice"
+    "tables_active_title"
   ],
 
   "ru": [
     "table_label",
     "tables_title",
-    "tables_active_title",
-    "catalog_qr_export",
-    "catalog_qr_page",
-    "catalog_qr_scan_button",
-    "catalog_qr_progress",
-    "catalog_qr_done",
-    "catalog_qr_scan_choice"
+    "tables_active_title"
   ]
 }
