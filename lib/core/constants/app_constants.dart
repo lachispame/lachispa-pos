@@ -1,6 +1,6 @@
 class AppConstants {
   static const String appName = 'POS Lightning';
-  static const String appVersion = '1.0.1';
+  static const String appVersion = '1.1.0';
 
   static const String lnbitsLocal = 'http://192.168.1.103:5000';
   static const String lnbitsProduction = 'https://lachispa.me/lndhun/ext/';
