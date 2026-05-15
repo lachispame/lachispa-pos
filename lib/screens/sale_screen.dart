@@ -227,7 +227,7 @@ class _SaleScreenState extends State<SaleScreen> {
                 done = false;
                 if (mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(l10n.invalid_qr), backgroundColor: Colors.red),
+                    SnackBar(content: Text('${l10n.error_generic}: ${l10n.invalid_qr}'), backgroundColor: Colors.red),
                   );
                 }
                 return;
@@ -238,7 +238,7 @@ class _SaleScreenState extends State<SaleScreen> {
                 done = false;
                 if (mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(l10n.invalid_qr), backgroundColor: Colors.red),
+                    SnackBar(content: Text('${l10n.error_generic}: ${l10n.invalid_qr}'), backgroundColor: Colors.red),
                   );
                 }
                 return;
@@ -982,10 +982,20 @@ class _SaleScreenState extends State<SaleScreen> {
         return '\$';
       case 'EUR':
         return '€';
+      case 'GBP':
+        return '£';
       case 'CUP':
         return '\$';
       case 'MLC':
         return 'MLC ';
+      case 'CAD':
+        return 'C\$';
+      case 'AUD':
+        return 'A\$';
+      case 'JPY':
+        return '¥';
+      case 'CHF':
+        return 'CHF';
       case 'SAT':
         return '';
       default:

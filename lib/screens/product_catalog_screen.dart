@@ -102,10 +102,24 @@ class _ProductCatalogScreenState extends State<ProductCatalogScreen> {
             onPressed: () async {
               final nombre = controllerNombre.text.trim();
               final precioTxt = controllerPrecio.text.trim();
-              if (nombre.isEmpty || precioTxt.isEmpty) return;
+              if (nombre.isEmpty || precioTxt.isEmpty) {
+                if (ctx.mounted) {
+                  ScaffoldMessenger.of(ctx).showSnackBar(
+                    SnackBar(content: Text(l10n.catalog_name_price_required), backgroundColor: Colors.red),
+                  );
+                }
+                return;
+              }
 
               final precio = double.tryParse(precioTxt);
-              if (precio == null || precio <= 0) return;
+              if (precio == null || precio <= 0) {
+                if (ctx.mounted) {
+                  ScaffoldMessenger.of(ctx).showSnackBar(
+                    SnackBar(content: Text(l10n.catalog_valid_price_required), backgroundColor: Colors.red),
+                  );
+                }
+                return;
+              }
 
               final categoria = controllerCategoria.text.trim();
               final provider = context.read<ProductProvider>();
@@ -194,7 +208,7 @@ class _ProductCatalogScreenState extends State<ProductCatalogScreen> {
                 done = false;
                 if (mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(l10n.invalid_qr), backgroundColor: Colors.red),
+                    SnackBar(content: Text('${l10n.error_generic}: ${l10n.invalid_qr}'), backgroundColor: Colors.red),
                   );
                 }
                 return;
@@ -205,7 +219,7 @@ class _ProductCatalogScreenState extends State<ProductCatalogScreen> {
                 done = false;
                 if (mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(l10n.invalid_qr), backgroundColor: Colors.red),
+                    SnackBar(content: Text('${l10n.error_generic}: ${l10n.invalid_qr}'), backgroundColor: Colors.red),
                   );
                 }
                 return;
@@ -331,10 +345,20 @@ class _ProductCatalogScreenState extends State<ProductCatalogScreen> {
         return '\$';
       case 'EUR':
         return '€';
+      case 'GBP':
+        return '£';
       case 'CUP':
         return '\$';
       case 'MLC':
         return 'MLC ';
+      case 'CAD':
+        return 'C\$';
+      case 'AUD':
+        return 'A\$';
+      case 'JPY':
+        return '¥';
+      case 'CHF':
+        return 'CHF';
       case 'SAT':
         return '';
       default:

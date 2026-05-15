@@ -200,7 +200,9 @@
   "catalog_import_confirm": "Import {count} products?",
   "catalog_imported": "{count} products imported",
   "catalog_invalid_file": "Invalid catalog file",
-
+  "catalog_name_price_required": "Name and price are required",
+  "catalog_valid_price_required": "Enter a valid positive price",
+  
   "receipt_title": "Ticket",
   "receipt_brand": "LA CHISPA",
   "receipt_subtitle": "Lightning POS",

@@ -138,7 +138,6 @@
   "how_to_connect": "CÓMO CONECTAR",
   "steps_title": "Pasos para conectar:",
   "developed_with": "Desarrollado con",
-  "mlc_full_name": "MLC - Moneda Convertible (CBDC)",
   "no_sales_to_export": "No hay ventas para exportar",
   "sales_deleted": "Ventas eliminadas",
   "employee": "Dependiente",
@@ -201,7 +200,9 @@
   "catalog_import_confirm": "¿Importar {count} productos?",
   "catalog_imported": "{count} productos importados",
   "catalog_invalid_file": "Archivo de catálogo inválido",
-
+  "catalog_name_price_required": "Nombre y precio son requeridos",
+  "catalog_valid_price_required": "Ingrese un precio válido positivo",
+  
   "receipt_title": "Ticket",
   "receipt_brand": "LA CHISPA",
   "receipt_subtitle": "Punto de Venta Lightning",

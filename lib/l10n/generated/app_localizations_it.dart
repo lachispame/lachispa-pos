@@ -579,6 +579,13 @@ class AppLocalizationsIt extends AppLocalizations {
   String get catalog_invalid_file => 'File catalogo non valido';
 
   @override
+  String get catalog_name_price_required => 'Nombre y precio son requeridos';
+
+  @override
+  String get catalog_valid_price_required =>
+      'Ingrese un precio válido positivo';
+
+  @override
   String get receipt_title => 'Scontrino';
 
   @override

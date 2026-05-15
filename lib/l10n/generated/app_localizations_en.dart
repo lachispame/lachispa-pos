@@ -578,6 +578,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get catalog_invalid_file => 'Invalid catalog file';
 
   @override
+  String get catalog_name_price_required => 'Name and price are required';
+
+  @override
+  String get catalog_valid_price_required => 'Enter a valid positive price';
+
+  @override
   String get receipt_title => 'Ticket';
 
   @override

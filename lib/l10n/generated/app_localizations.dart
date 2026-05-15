@@ -1232,6 +1232,18 @@ abstract class AppLocalizations {
   /// **'Archivo de catálogo inválido'**
   String get catalog_invalid_file;
 
+  /// No description provided for @catalog_name_price_required.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre y precio son requeridos'**
+  String get catalog_name_price_required;
+
+  /// No description provided for @catalog_valid_price_required.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingrese un precio válido positivo'**
+  String get catalog_valid_price_required;
+
   /// No description provided for @receipt_title.
   ///
   /// In es, this message translates to:
