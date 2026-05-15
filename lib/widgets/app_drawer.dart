@@ -525,14 +525,13 @@ class AppDrawer extends StatelessWidget {
                 itemBuilder: (_, index) {
                   final currency = allCurrencies[index];
                   final isSelected = currencyProvider.isCurrencySelected(currency);
-                  final info = currencyProvider.getCurrencyInfo(currency);
 
                   return ListTile(
                     leading: Text(
-                      info?.flag ?? '💰',
+                      currencyProvider.getCurrencyInfo(currency)?.flag ?? '💰',
                       style: const TextStyle(fontSize: 24),
                     ),
-                    title: Text(info?.name ?? currency),
+                    title: Text(_localeCurrencyName(context, currency)),
                     subtitle: Text(currency),
                     trailing: Checkbox(
                       value: isSelected,
@@ -580,5 +579,21 @@ class _DrawerItem extends StatelessWidget {
       onTap: onTap,
       dense: true,
     );
+  }
+}
+
+String _localeCurrencyName(BuildContext context, String code) {
+  final l10n = AppLocalizations.of(context)!;
+  switch (code) {
+    case 'USD': return l10n.cur_name_usd;
+    case 'EUR': return l10n.cur_name_eur;
+    case 'CUP': return l10n.cur_name_cup;
+    case 'MLC': return l10n.cur_name_mlc;
+    case 'GBP': return l10n.cur_name_gbp;
+    case 'CAD': return l10n.cur_name_cad;
+    case 'JPY': return l10n.cur_name_jpy;
+    case 'AUD': return l10n.cur_name_aud;
+    case 'CHF': return l10n.cur_name_chf;
+    default: return code;
   }
 }

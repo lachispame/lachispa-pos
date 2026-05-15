@@ -194,7 +194,7 @@ class _ProductCatalogScreenState extends State<ProductCatalogScreen> {
                 done = false;
                 if (mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('${l10n.error_generic}: QR inválido'), backgroundColor: Colors.red),
+                    SnackBar(content: Text(l10n.invalid_qr), backgroundColor: Colors.red),
                   );
                 }
                 return;
@@ -205,7 +205,7 @@ class _ProductCatalogScreenState extends State<ProductCatalogScreen> {
                 done = false;
                 if (mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('${l10n.error_generic}: QR inválido'), backgroundColor: Colors.red),
+                    SnackBar(content: Text(l10n.invalid_qr), backgroundColor: Colors.red),
                   );
                 }
                 return;

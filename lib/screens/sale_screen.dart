@@ -197,7 +197,7 @@ class _SaleScreenState extends State<SaleScreen> {
     }
   }
 
-  void _scanProductQrForCart() {
+  Future<void> _scanProductQrForCart() async {
     final l10n = AppLocalizations.of(context)!;
     var done = false;
     Navigator.push(
@@ -213,7 +213,7 @@ class _SaleScreenState extends State<SaleScreen> {
             ),
           ),
           body: MobileScanner(
-            onDetect: (capture) {
+            onDetect: (capture) async {
               if (done) return;
               done = true;
               final barcodes = capture.barcodes;
@@ -227,7 +227,7 @@ class _SaleScreenState extends State<SaleScreen> {
                 done = false;
                 if (mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('${l10n.error_generic}: QR inválido'), backgroundColor: Colors.red),
+                    SnackBar(content: Text(l10n.invalid_qr), backgroundColor: Colors.red),
                   );
                 }
                 return;
@@ -238,7 +238,7 @@ class _SaleScreenState extends State<SaleScreen> {
                 done = false;
                 if (mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('${l10n.error_generic}: QR inválido'), backgroundColor: Colors.red),
+                    SnackBar(content: Text(l10n.invalid_qr), backgroundColor: Colors.red),
                   );
                 }
                 return;
@@ -251,8 +251,17 @@ class _SaleScreenState extends State<SaleScreen> {
                 _showCurrencyMismatchDialog();
                 return;
               }
-              cart.addItem(nombre: nombre, precio: precio, cantidad: 1);
-              Navigator.pop(context);
+              try {
+                await cart.addItem(nombre: nombre, precio: precio, cantidad: 1);
+                Navigator.pop(context);
+              } catch (e) {
+                done = false;
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('${l10n.error_generic}: $e'), backgroundColor: Colors.red),
+                  );
+                }
+              }
             },
           ),
         ),
@@ -540,7 +549,7 @@ class _SaleScreenState extends State<SaleScreen> {
                     Navigator.pop(ctx);
                     _closeTable(tableProvider.currentTable!);
                   },
-                  child: Text(l10n.discard_sale, style: const TextStyle(color: Colors.red)),
+                  child: Text(l10n.discard_table, style: const TextStyle(color: Colors.red)),
                 ),
               TextButton(
                 onPressed: () => Navigator.pop(ctx),
@@ -551,7 +560,7 @@ class _SaleScreenState extends State<SaleScreen> {
                   Navigator.pop(ctx);
                   _selectTable(selectedTable);
                 },
-                child: Text(l10n.got_it),
+                child: Text(l10n.confirm_table),
               ),
             ],
           ),
@@ -570,11 +579,10 @@ class _SaleScreenState extends State<SaleScreen> {
 
     if (tableProvider.currentTable == table) return;
 
-    await cart.clearCart();
-    await tableProvider.selectTable(table);
-
     final items = tableProvider.itemsForTable(table);
     if (items.isNotEmpty) {
+      await cart.clearCart();
+      await tableProvider.selectTable(table);
       cart.loadFromPendingSale(Sale(
         id: '',
         userId: '',
@@ -596,6 +604,12 @@ class _SaleScreenState extends State<SaleScreen> {
         invoiceId: null,
         estado: 'pendiente',
       ));
+    } else if (tableProvider.currentTable == null) {
+      await tableProvider.saveCartToTable(table, List.from(cart.items));
+      await tableProvider.selectTable(table);
+    } else {
+      await cart.clearCart();
+      await tableProvider.selectTable(table);
     }
   }
 

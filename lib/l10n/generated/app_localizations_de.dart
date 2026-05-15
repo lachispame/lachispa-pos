@@ -208,6 +208,36 @@ class AppLocalizationsDe extends AppLocalizations {
   String get currency_sat => 'SAT - Satoshis';
 
   @override
+  String get cur_name_usd => 'Dollar';
+
+  @override
+  String get cur_name_eur => 'Euro';
+
+  @override
+  String get cur_name_cup => 'Kubanischer Peso';
+
+  @override
+  String get cur_name_mlc => 'Konvertierbare Währung';
+
+  @override
+  String get cur_name_gbp => 'Britisches Pfund';
+
+  @override
+  String get cur_name_cad => 'Kanadischer Dollar';
+
+  @override
+  String get cur_name_jpy => 'Japanischer Yen';
+
+  @override
+  String get cur_name_aud => 'Australischer Dollar';
+
+  @override
+  String get cur_name_chf => 'Schweizer Franken';
+
+  @override
+  String get cur_name_sat => 'Satoshis';
+
+  @override
   String get history_title => 'Verkaufsverlauf';
 
   @override
@@ -279,6 +309,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get discard_sale => 'Verwerfen';
+
+  @override
+  String get discard_table => 'Tisch verwerfen';
 
   @override
   String get error_generic => 'Fehler';
@@ -595,6 +628,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get got_it => 'Verstanden';
+
+  @override
+  String get confirm_table => 'Bestätigen';
 
   @override
   String get manual_entry_tooltip => 'Manuelle Eingabe';

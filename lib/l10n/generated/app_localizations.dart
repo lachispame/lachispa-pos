@@ -506,6 +506,66 @@ abstract class AppLocalizations {
   /// **'SAT - Satoshis'**
   String get currency_sat;
 
+  /// No description provided for @cur_name_usd.
+  ///
+  /// In es, this message translates to:
+  /// **'Dólar'**
+  String get cur_name_usd;
+
+  /// No description provided for @cur_name_eur.
+  ///
+  /// In es, this message translates to:
+  /// **'Euro'**
+  String get cur_name_eur;
+
+  /// No description provided for @cur_name_cup.
+  ///
+  /// In es, this message translates to:
+  /// **'Peso Cubano'**
+  String get cur_name_cup;
+
+  /// No description provided for @cur_name_mlc.
+  ///
+  /// In es, this message translates to:
+  /// **'Moneda Convertible'**
+  String get cur_name_mlc;
+
+  /// No description provided for @cur_name_gbp.
+  ///
+  /// In es, this message translates to:
+  /// **'Libra Esterlina'**
+  String get cur_name_gbp;
+
+  /// No description provided for @cur_name_cad.
+  ///
+  /// In es, this message translates to:
+  /// **'Dólar Canadiense'**
+  String get cur_name_cad;
+
+  /// No description provided for @cur_name_jpy.
+  ///
+  /// In es, this message translates to:
+  /// **'Yen Japonés'**
+  String get cur_name_jpy;
+
+  /// No description provided for @cur_name_aud.
+  ///
+  /// In es, this message translates to:
+  /// **'Dólar Australiano'**
+  String get cur_name_aud;
+
+  /// No description provided for @cur_name_chf.
+  ///
+  /// In es, this message translates to:
+  /// **'Franco Suizo'**
+  String get cur_name_chf;
+
+  /// No description provided for @cur_name_sat.
+  ///
+  /// In es, this message translates to:
+  /// **'Satoshis'**
+  String get cur_name_sat;
+
   /// No description provided for @history_title.
   ///
   /// In es, this message translates to:
@@ -649,6 +709,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Descartar'**
   String get discard_sale;
+
+  /// No description provided for @discard_table.
+  ///
+  /// In es, this message translates to:
+  /// **'Descartar mesa'**
+  String get discard_table;
 
   /// No description provided for @error_generic.
   ///
@@ -1255,6 +1321,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Entendido'**
   String get got_it;
+
+  /// No description provided for @confirm_table.
+  ///
+  /// In es, this message translates to:
+  /// **'Confirmar'**
+  String get confirm_table;
 
   /// No description provided for @manual_entry_tooltip.
   ///

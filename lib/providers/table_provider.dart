@@ -21,15 +21,25 @@ class TableProvider extends ChangeNotifier {
     if (json == null) return;
     try {
       final decoded = jsonDecode(json) as Map<String, dynamic>;
+      final temp = <int, List<CartItem>>{};
       for (final entry in decoded.entries) {
         final tableNum = int.parse(entry.key);
         final items = (entry.value as List)
             .map((m) => CartItem.fromMap(m as Map<String, dynamic>))
             .toList();
-        _tables[tableNum] = items;
+        temp[tableNum] = items;
       }
+      _tables
+        ..clear()
+        ..addAll(temp);
       notifyListeners();
-    } catch (_) {}
+    } on FormatException catch (e, s) {
+      debugPrint('loadSavedTables FormatException: $e\n$s');
+      await prefs.remove(_storageKey);
+    } on TypeError catch (e, s) {
+      debugPrint('loadSavedTables TypeError: $e\n$s');
+      await prefs.remove(_storageKey);
+    }
   }
 
   Future<void> _persist() async {

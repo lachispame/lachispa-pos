@@ -207,6 +207,36 @@ class AppLocalizationsJa extends AppLocalizations {
   String get currency_sat => 'SAT - サトシ';
 
   @override
+  String get cur_name_usd => '米ドル';
+
+  @override
+  String get cur_name_eur => 'ユーロ';
+
+  @override
+  String get cur_name_cup => 'キューバペソ';
+
+  @override
+  String get cur_name_mlc => '兌換通貨';
+
+  @override
+  String get cur_name_gbp => '英ポンド';
+
+  @override
+  String get cur_name_cad => 'カナダドル';
+
+  @override
+  String get cur_name_jpy => '日本円';
+
+  @override
+  String get cur_name_aud => '豪ドル';
+
+  @override
+  String get cur_name_chf => 'スイスフラン';
+
+  @override
+  String get cur_name_sat => 'サトシ';
+
+  @override
   String get history_title => '売上履歴';
 
   @override
@@ -278,6 +308,9 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get discard_sale => '破棄';
+
+  @override
+  String get discard_table => 'テーブルを破棄';
 
   @override
   String get error_generic => 'エラー';
@@ -589,6 +622,9 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get got_it => 'わかりました';
+
+  @override
+  String get confirm_table => '確認';
 
   @override
   String get manual_entry_tooltip => '手動入力';

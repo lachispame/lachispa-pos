@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../core/constants/currencies.dart';
 import '../core/theme/app_theme.dart';
+import '../l10n/generated/app_localizations.dart';
 import '../providers/currency_settings_provider.dart';
 
 class CurrencySelector extends StatelessWidget {
@@ -72,7 +73,7 @@ class CurrencySelector extends StatelessWidget {
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
-                          m.nombre,
+                          _localeCurrencyName(context, m),
                           style: TextStyle(
                             fontSize: 14,
                             color: Colors.grey[400],
@@ -149,5 +150,21 @@ class CurrencySelectorRow extends StatelessWidget {
           )
           .toList(),
     );
+  }
+}
+
+String _localeCurrencyName(BuildContext context, Moneda m) {
+  final l10n = AppLocalizations.of(context)!;
+  switch (m) {
+    case Moneda.usd: return l10n.cur_name_usd;
+    case Moneda.eur: return l10n.cur_name_eur;
+    case Moneda.cup: return l10n.cur_name_cup;
+    case Moneda.mlc: return l10n.cur_name_mlc;
+    case Moneda.gbp: return l10n.cur_name_gbp;
+    case Moneda.cad: return l10n.cur_name_cad;
+    case Moneda.jpy: return l10n.cur_name_jpy;
+    case Moneda.aud: return l10n.cur_name_aud;
+    case Moneda.chf: return l10n.cur_name_chf;
+    case Moneda.sat: return l10n.cur_name_sat;
   }
 }

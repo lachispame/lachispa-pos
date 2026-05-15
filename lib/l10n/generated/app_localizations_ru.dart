@@ -208,6 +208,36 @@ class AppLocalizationsRu extends AppLocalizations {
   String get currency_sat => 'SAT - Сатоши';
 
   @override
+  String get cur_name_usd => 'Доллар';
+
+  @override
+  String get cur_name_eur => 'Евро';
+
+  @override
+  String get cur_name_cup => 'Кубинское песо';
+
+  @override
+  String get cur_name_mlc => 'Конвертируемая валюта';
+
+  @override
+  String get cur_name_gbp => 'Британский фунт';
+
+  @override
+  String get cur_name_cad => 'Канадский доллар';
+
+  @override
+  String get cur_name_jpy => 'Японская иена';
+
+  @override
+  String get cur_name_aud => 'Австралийский доллар';
+
+  @override
+  String get cur_name_chf => 'Швейцарский франк';
+
+  @override
+  String get cur_name_sat => 'Сатоши';
+
+  @override
   String get history_title => 'История продаж';
 
   @override
@@ -279,6 +309,9 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get discard_sale => 'Отменить';
+
+  @override
+  String get discard_table => 'Отменить стол';
 
   @override
   String get error_generic => 'Ошибка';
@@ -592,6 +625,9 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get got_it => 'Понятно';
+
+  @override
+  String get confirm_table => 'Подтвердить';
 
   @override
   String get manual_entry_tooltip => 'Ручной ввод';
