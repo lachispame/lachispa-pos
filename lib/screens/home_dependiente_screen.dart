@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../l10n/generated/app_localizations.dart';
+import '../core/constants/app_constants.dart';
 import '../core/theme/app_theme.dart';
 import '../core/services/export_service.dart';
 import '../providers/auth_provider.dart';
@@ -87,7 +88,7 @@ class _HomeDependienteScreenState extends State<HomeDependienteScreen> {
       dependienteNombre: user.nombre,
       ventas: sales,
       totalSats: totalSats,
-      appVersion: '1.0.0',
+      appVersion: AppConstants.appVersion,
     );
 
     await exportService.shareJson(json: json, dependienteNombre: user.nombre);
