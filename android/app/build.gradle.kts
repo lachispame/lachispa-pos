@@ -38,16 +38,20 @@ android {
         }
     }
 
-    applicationVariants.all { variant ->
-        variant.outputs.all {
-            val abi = filters.find { it.filterType == com.android.build.OutputFile.ABI }?.identifier
-            if (abi != null) {
-                val abiName = when (abi) {
-                    "arm64-v8a" -> "arm64"
-                    "armeabi-v7a" -> "armeabi"
-                    else -> abi
+    afterEvaluate {
+        tasks.findByName("assembleRelease")?.doLast {
+            val apkDir = layout.buildDirectory.dir("outputs/flutter-apk").get().asFile
+            apkDir.listFiles()?.forEach { apk ->
+                val name = apk.name
+                if (!name.endsWith(".apk") || name.contains("unsigned")) return@forEach
+                val abi = when {
+                    name.contains("arm64-v8a") -> "arm64"
+                    name.contains("armeabi-v7a") -> "armeabi"
+                    name.contains("x86_64") -> "x86_64"
+                    else -> return@forEach
                 }
-                outputFileName = "lachispapos-v${variant.versionName}-${abiName}.apk"
+                val version = android.defaultConfig.versionName ?: return@forEach
+                apk.copyTo(apk.parentFile.resolve("lachispapos-v${version}-${abi}.apk"), overwrite = true)
             }
         }
     }
