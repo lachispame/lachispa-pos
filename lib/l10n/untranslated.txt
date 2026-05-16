@@ -1,0 +1,49 @@
+{
+  "de": [
+    "catalog_name_price_required",
+    "catalog_valid_price_required",
+    "table_label",
+    "tables_title",
+    "tables_active_title"
+  ],
+
+  "fr": [
+    "catalog_name_price_required",
+    "catalog_valid_price_required",
+    "table_label",
+    "tables_title",
+    "tables_active_title"
+  ],
+
+  "it": [
+    "catalog_name_price_required",
+    "catalog_valid_price_required",
+    "table_label",
+    "tables_title",
+    "tables_active_title"
+  ],
+
+  "ja": [
+    "catalog_name_price_required",
+    "catalog_valid_price_required",
+    "table_label",
+    "tables_title",
+    "tables_active_title"
+  ],
+
+  "pt": [
+    "catalog_name_price_required",
+    "catalog_valid_price_required",
+    "table_label",
+    "tables_title",
+    "tables_active_title"
+  ],
+
+  "ru": [
+    "catalog_name_price_required",
+    "catalog_valid_price_required",
+    "table_label",
+    "tables_title",
+    "tables_active_title"
+  ]
+}

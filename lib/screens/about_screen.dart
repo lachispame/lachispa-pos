@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../l10n/generated/app_localizations.dart';
 import '../core/theme/app_theme.dart';
+import '../core/constants/app_constants.dart';
 
 class AboutScreen extends StatelessWidget {
   const AboutScreen({super.key});
@@ -42,26 +43,31 @@ class AboutScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    '${l10n.about_version} 1.0.0',
+                    '${l10n.about_version} ${AppConstants.appVersion}',
                     style: TextStyle(color: Colors.grey[400]),
+                  ),
+                  const SizedBox(height: 12),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Text(
+                      l10n.about_description,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.grey[400],
+                        fontSize: 14,
+                      ),
+                    ),
                   ),
                 ],
               ),
             ),
             const SizedBox(height: 32),
-            Text(
-              l10n.features_title,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: AppTheme.primaryColor,
-              ),
-            ),
+            _SectionHeader(title: l10n.features_title),
             const SizedBox(height: 16),
             _FeatureItem(
               icon: Icons.point_of_sale,
               title: l10n.sale_title,
-              description: l10n.new_sale_subtitle,
+              description: l10n.about_sale_desc,
             ),
             _FeatureItem(
               icon: Icons.qr_code,
@@ -71,13 +77,12 @@ class AboutScreen extends StatelessWidget {
             _FeatureItem(
               icon: Icons.attach_money,
               title: l10n.currency_settings,
-              description:
-                  'CUP, MLC (CBDC), USD, EUR, GBP, CAD, JPY, AUD, CHF, SATs',
+              description: l10n.about_multicurrency_desc,
             ),
             _FeatureItem(
               icon: Icons.currency_exchange,
-              title: l10n.currency_settings,
-              description: l10n.currency_settings,
+              title: l10n.about_exchange_rates,
+              description: l10n.about_exchange_desc,
             ),
             _FeatureItem(
               icon: Icons.cloud_sync,
@@ -92,22 +97,45 @@ class AboutScreen extends StatelessWidget {
             _FeatureItem(
               icon: Icons.file_upload,
               title: l10n.export_sales,
-              description: l10n.import_sales_subtitle,
+              description: l10n.about_export_desc,
             ),
             _FeatureItem(
               icon: Icons.file_download,
               title: l10n.import_button,
-              description: l10n.import_sales_subtitle,
+              description: l10n.about_import_desc,
+            ),
+            _FeatureItem(
+              icon: Icons.inventory_2,
+              title: l10n.catalog_title,
+              description: l10n.about_catalog_desc,
+            ),
+            _FeatureItem(
+              icon: Icons.nfc,
+              title: l10n.pay_with_nfc,
+              description: l10n.about_nfc_desc,
+            ),
+            _FeatureItem(
+              icon: Icons.table_restaurant,
+              title: l10n.tables_title,
+              description: l10n.about_tables_desc,
+            ),
+            _FeatureItem(
+              icon: Icons.bar_chart,
+              title: l10n.stats_title,
+              description: l10n.about_stats_desc,
+            ),
+            _FeatureItem(
+              icon: Icons.receipt_long,
+              title: l10n.receipt_title,
+              description: l10n.about_receipt_desc,
+            ),
+            _FeatureItem(
+              icon: Icons.language,
+              title: l10n.language_settings,
+              description: l10n.about_multilang_desc,
             ),
             const SizedBox(height: 32),
-            Text(
-              l10n.roles_title,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: AppTheme.primaryColor,
-              ),
-            ),
+            _SectionHeader(title: l10n.roles_title),
             const SizedBox(height: 16),
             _FeatureItem(
               icon: Icons.person,
@@ -120,14 +148,7 @@ class AboutScreen extends StatelessWidget {
               description: l10n.boss_panel_title,
             ),
             const SizedBox(height: 32),
-            Text(
-              l10n.how_to_connect,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: AppTheme.primaryColor,
-              ),
-            ),
+            _SectionHeader(title: l10n.how_to_connect),
             const SizedBox(height: 16),
             Container(
               padding: const EdgeInsets.all(16),
@@ -171,7 +192,7 @@ class AboutScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Powered by Lachispa.me',
+                    'lachispa.me',
                     style: TextStyle(color: Colors.grey[500], fontSize: 12),
                   ),
                 ],
@@ -179,6 +200,23 @@ class AboutScreen extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _SectionHeader extends StatelessWidget {
+  final String title;
+  const _SectionHeader({required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      title,
+      style: TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
+        color: AppTheme.primaryColor,
       ),
     );
   }

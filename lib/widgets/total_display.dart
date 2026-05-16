@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../l10n/generated/app_localizations.dart';
 import '../core/theme/app_theme.dart';
 
 class TotalDisplay extends StatelessWidget {
@@ -17,6 +18,8 @@ class TotalDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -32,9 +35,9 @@ class TotalDisplay extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
-                'TOTAL',
-                style: TextStyle(
+              Text(
+                l10n.total_label,
+                style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                   color: Colors.grey,
@@ -42,7 +45,7 @@ class TotalDisplay extends StatelessWidget {
               ),
               if (rateUsado > 0)
                 Text(
-                  '@ ${rateUsado.toStringAsFixed(8)} BTC',
+                  '@ ${rateUsado.toStringAsFixed(8)} ${l10n.btc_unit}',
                   style: TextStyle(fontSize: 12, color: Colors.grey[500]),
                 ),
             ],
@@ -59,7 +62,7 @@ class TotalDisplay extends StatelessWidget {
             ),
           const SizedBox(height: 4),
           Text(
-            '≈ $totalSats sats',
+            '≈ $totalSats ${l10n.receipt_sats}',
             style: const TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.w600,

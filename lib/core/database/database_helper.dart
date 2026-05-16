@@ -22,10 +22,26 @@ class DatabaseHelper {
       path,
       version: AppConstants.dbVersion,
       onCreate: _createDB,
+      onUpgrade: _upgradeDB,
       onConfigure: (db) async {
         await db.execute('PRAGMA foreign_keys = ON');
       },
     );
+  }
+
+  Future<void> _upgradeDB(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 2) {
+      await db.execute('''
+        CREATE TABLE IF NOT EXISTS products (
+          id TEXT PRIMARY KEY,
+          nombre TEXT NOT NULL,
+          precio REAL NOT NULL,
+          moneda TEXT NOT NULL DEFAULT 'USD',
+          categoria TEXT,
+          created_at TEXT NOT NULL
+        )
+      ''');
+    }
   }
 
   Future<void> _createDB(Database db, int version) async {
@@ -80,6 +96,17 @@ class DatabaseHelper {
         cantidad INTEGER NOT NULL,
         subtotal_fiat REAL NOT NULL,
         subtotal_sats INTEGER NOT NULL
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE products (
+        id TEXT PRIMARY KEY,
+        nombre TEXT NOT NULL,
+        precio REAL NOT NULL,
+        moneda TEXT NOT NULL DEFAULT 'USD',
+        categoria TEXT,
+        created_at TEXT NOT NULL
       )
     ''');
   }

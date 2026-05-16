@@ -506,6 +506,66 @@ abstract class AppLocalizations {
   /// **'SAT - Satoshis'**
   String get currency_sat;
 
+  /// No description provided for @cur_name_usd.
+  ///
+  /// In es, this message translates to:
+  /// **'Dólar'**
+  String get cur_name_usd;
+
+  /// No description provided for @cur_name_eur.
+  ///
+  /// In es, this message translates to:
+  /// **'Euro'**
+  String get cur_name_eur;
+
+  /// No description provided for @cur_name_cup.
+  ///
+  /// In es, this message translates to:
+  /// **'Peso Cubano'**
+  String get cur_name_cup;
+
+  /// No description provided for @cur_name_mlc.
+  ///
+  /// In es, this message translates to:
+  /// **'Moneda Convertible'**
+  String get cur_name_mlc;
+
+  /// No description provided for @cur_name_gbp.
+  ///
+  /// In es, this message translates to:
+  /// **'Libra Esterlina'**
+  String get cur_name_gbp;
+
+  /// No description provided for @cur_name_cad.
+  ///
+  /// In es, this message translates to:
+  /// **'Dólar Canadiense'**
+  String get cur_name_cad;
+
+  /// No description provided for @cur_name_jpy.
+  ///
+  /// In es, this message translates to:
+  /// **'Yen Japonés'**
+  String get cur_name_jpy;
+
+  /// No description provided for @cur_name_aud.
+  ///
+  /// In es, this message translates to:
+  /// **'Dólar Australiano'**
+  String get cur_name_aud;
+
+  /// No description provided for @cur_name_chf.
+  ///
+  /// In es, this message translates to:
+  /// **'Franco Suizo'**
+  String get cur_name_chf;
+
+  /// No description provided for @cur_name_sat.
+  ///
+  /// In es, this message translates to:
+  /// **'Satoshis'**
+  String get cur_name_sat;
+
   /// No description provided for @history_title.
   ///
   /// In es, this message translates to:
@@ -649,6 +709,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Descartar'**
   String get discard_sale;
+
+  /// No description provided for @discard_table.
+  ///
+  /// In es, this message translates to:
+  /// **'Descartar mesa'**
+  String get discard_table;
 
   /// No description provided for @error_generic.
   ///
@@ -973,6 +1039,648 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Error del servidor'**
   String get lnurl_error;
+
+  /// No description provided for @drawer_stats.
+  ///
+  /// In es, this message translates to:
+  /// **'ESTADÍSTICAS'**
+  String get drawer_stats;
+
+  /// No description provided for @drawer_stats_subtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Ventas, gráficos y top productos'**
+  String get drawer_stats_subtitle;
+
+  /// No description provided for @drawer_catalog.
+  ///
+  /// In es, this message translates to:
+  /// **'CATÁLOGO'**
+  String get drawer_catalog;
+
+  /// No description provided for @drawer_catalog_subtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Gestionar productos'**
+  String get drawer_catalog_subtitle;
+
+  /// No description provided for @drawer_import_sales.
+  ///
+  /// In es, this message translates to:
+  /// **'IMPORTAR VENTAS'**
+  String get drawer_import_sales;
+
+  /// No description provided for @drawer_import_sales_subtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Importar ventas de dependientes'**
+  String get drawer_import_sales_subtitle;
+
+  /// No description provided for @drawer_export_sales.
+  ///
+  /// In es, this message translates to:
+  /// **'EXPORTAR VENTAS'**
+  String get drawer_export_sales;
+
+  /// No description provided for @drawer_export_sales_subtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Exportar ventas a JSON'**
+  String get drawer_export_sales_subtitle;
+
+  /// No description provided for @drawer_import_catalog.
+  ///
+  /// In es, this message translates to:
+  /// **'IMPORTAR CATÁLOGO'**
+  String get drawer_import_catalog;
+
+  /// No description provided for @drawer_import_catalog_subtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Productos del jefe'**
+  String get drawer_import_catalog_subtitle;
+
+  /// No description provided for @drawer_delete_imported_subtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar ventas importadas'**
+  String get drawer_delete_imported_subtitle;
+
+  /// No description provided for @drawer_logout.
+  ///
+  /// In es, this message translates to:
+  /// **'Salir'**
+  String get drawer_logout;
+
+  /// No description provided for @catalog_title.
+  ///
+  /// In es, this message translates to:
+  /// **'Catálogo de Productos'**
+  String get catalog_title;
+
+  /// No description provided for @catalog_new_product.
+  ///
+  /// In es, this message translates to:
+  /// **'Nuevo Producto'**
+  String get catalog_new_product;
+
+  /// No description provided for @catalog_edit_product.
+  ///
+  /// In es, this message translates to:
+  /// **'Editar Producto'**
+  String get catalog_edit_product;
+
+  /// No description provided for @catalog_product_name_label.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre'**
+  String get catalog_product_name_label;
+
+  /// No description provided for @catalog_product_name_hint.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre del producto'**
+  String get catalog_product_name_hint;
+
+  /// No description provided for @catalog_product_price_label.
+  ///
+  /// In es, this message translates to:
+  /// **'Precio'**
+  String get catalog_product_price_label;
+
+  /// No description provided for @catalog_product_currency_label.
+  ///
+  /// In es, this message translates to:
+  /// **'Moneda'**
+  String get catalog_product_currency_label;
+
+  /// No description provided for @catalog_category_label.
+  ///
+  /// In es, this message translates to:
+  /// **'Categoría (opcional)'**
+  String get catalog_category_label;
+
+  /// No description provided for @catalog_category_hint.
+  ///
+  /// In es, this message translates to:
+  /// **'Ej: Bebidas, Comidas'**
+  String get catalog_category_hint;
+
+  /// No description provided for @catalog_save.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar'**
+  String get catalog_save;
+
+  /// No description provided for @catalog_add.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregar'**
+  String get catalog_add;
+
+  /// No description provided for @catalog_delete_title.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar Producto'**
+  String get catalog_delete_title;
+
+  /// No description provided for @catalog_delete_confirm.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Eliminar \"{productName}\"?'**
+  String catalog_delete_confirm(Object productName);
+
+  /// No description provided for @catalog_export_tooltip.
+  ///
+  /// In es, this message translates to:
+  /// **'Exportar catálogo'**
+  String get catalog_export_tooltip;
+
+  /// No description provided for @catalog_no_products.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay productos'**
+  String get catalog_no_products;
+
+  /// No description provided for @catalog_add_first.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregar primer producto'**
+  String get catalog_add_first;
+
+  /// No description provided for @catalog_import_title.
+  ///
+  /// In es, this message translates to:
+  /// **'Importar Catálogo'**
+  String get catalog_import_title;
+
+  /// No description provided for @catalog_import_confirm.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Importar {count} productos?'**
+  String catalog_import_confirm(Object count);
+
+  /// No description provided for @catalog_imported.
+  ///
+  /// In es, this message translates to:
+  /// **'{count} productos importados'**
+  String catalog_imported(Object count);
+
+  /// No description provided for @catalog_invalid_file.
+  ///
+  /// In es, this message translates to:
+  /// **'Archivo de catálogo inválido'**
+  String get catalog_invalid_file;
+
+  /// No description provided for @catalog_name_price_required.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre y precio son requeridos'**
+  String get catalog_name_price_required;
+
+  /// No description provided for @catalog_valid_price_required.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingrese un precio válido positivo'**
+  String get catalog_valid_price_required;
+
+  /// No description provided for @receipt_title.
+  ///
+  /// In es, this message translates to:
+  /// **'Ticket'**
+  String get receipt_title;
+
+  /// No description provided for @receipt_brand.
+  ///
+  /// In es, this message translates to:
+  /// **'LA CHISPA'**
+  String get receipt_brand;
+
+  /// No description provided for @receipt_subtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Punto de Venta Lightning'**
+  String get receipt_subtitle;
+
+  /// No description provided for @receipt_employee.
+  ///
+  /// In es, this message translates to:
+  /// **'Dependiente'**
+  String get receipt_employee;
+
+  /// No description provided for @receipt_date.
+  ///
+  /// In es, this message translates to:
+  /// **'Fecha'**
+  String get receipt_date;
+
+  /// No description provided for @receipt_total.
+  ///
+  /// In es, this message translates to:
+  /// **'TOTAL'**
+  String get receipt_total;
+
+  /// No description provided for @receipt_sats.
+  ///
+  /// In es, this message translates to:
+  /// **'sats'**
+  String get receipt_sats;
+
+  /// No description provided for @receipt_thanks.
+  ///
+  /// In es, this message translates to:
+  /// **'¡Gracias por su compra!'**
+  String get receipt_thanks;
+
+  /// No description provided for @receipt_website.
+  ///
+  /// In es, this message translates to:
+  /// **'lachispa.me'**
+  String get receipt_website;
+
+  /// No description provided for @receipt_share.
+  ///
+  /// In es, this message translates to:
+  /// **'Compartir Ticket'**
+  String get receipt_share;
+
+  /// No description provided for @receipt_new_sale.
+  ///
+  /// In es, this message translates to:
+  /// **'Nueva Venta'**
+  String get receipt_new_sale;
+
+  /// No description provided for @receipt_share_tooltip.
+  ///
+  /// In es, this message translates to:
+  /// **'Compartir'**
+  String get receipt_share_tooltip;
+
+  /// No description provided for @currency_mismatch_title.
+  ///
+  /// In es, this message translates to:
+  /// **'Monedas diferentes'**
+  String get currency_mismatch_title;
+
+  /// No description provided for @currency_mismatch_message.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pueden mezclar monedas en una misma venta. La venta actual está en {currency}. Finalice o cancele la venta actual para cambiar de moneda.'**
+  String currency_mismatch_message(Object currency);
+
+  /// No description provided for @got_it.
+  ///
+  /// In es, this message translates to:
+  /// **'Entendido'**
+  String get got_it;
+
+  /// No description provided for @confirm_table.
+  ///
+  /// In es, this message translates to:
+  /// **'Confirmar'**
+  String get confirm_table;
+
+  /// No description provided for @manual_entry_tooltip.
+  ///
+  /// In es, this message translates to:
+  /// **'Entrada manual'**
+  String get manual_entry_tooltip;
+
+  /// No description provided for @catalog_mode_tooltip.
+  ///
+  /// In es, this message translates to:
+  /// **'Catálogo'**
+  String get catalog_mode_tooltip;
+
+  /// No description provided for @search_products_hint.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscar productos...'**
+  String get search_products_hint;
+
+  /// No description provided for @no_results_in_currency.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin resultados en {currency}'**
+  String no_results_in_currency(Object currency);
+
+  /// No description provided for @no_products_in_currency.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay productos en {currency}'**
+  String no_products_in_currency(Object currency);
+
+  /// No description provided for @try_other_currency.
+  ///
+  /// In es, this message translates to:
+  /// **'Prueba con otra moneda'**
+  String get try_other_currency;
+
+  /// No description provided for @product_label.
+  ///
+  /// In es, this message translates to:
+  /// **'Producto'**
+  String get product_label;
+
+  /// No description provided for @name_hint.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre'**
+  String get name_hint;
+
+  /// No description provided for @price_label.
+  ///
+  /// In es, this message translates to:
+  /// **'Precio'**
+  String get price_label;
+
+  /// No description provided for @add_products_hint.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregue productos'**
+  String get add_products_hint;
+
+  /// No description provided for @invoice_memo.
+  ///
+  /// In es, this message translates to:
+  /// **'Venta POS - {userName}'**
+  String invoice_memo(Object userName);
+
+  /// No description provided for @settings_manual_entry.
+  ///
+  /// In es, this message translates to:
+  /// **'O ingrese manualmente:'**
+  String get settings_manual_entry;
+
+  /// No description provided for @settings_url_label.
+  ///
+  /// In es, this message translates to:
+  /// **'URL'**
+  String get settings_url_label;
+
+  /// No description provided for @settings_url_hint.
+  ///
+  /// In es, this message translates to:
+  /// **'https://lachispa.me o http://192.168.1.x:5000'**
+  String get settings_url_hint;
+
+  /// No description provided for @settings_api_key_label.
+  ///
+  /// In es, this message translates to:
+  /// **'API Key'**
+  String get settings_api_key_label;
+
+  /// No description provided for @settings_ticket_section.
+  ///
+  /// In es, this message translates to:
+  /// **'Ticket'**
+  String get settings_ticket_section;
+
+  /// No description provided for @settings_ticket_description.
+  ///
+  /// In es, this message translates to:
+  /// **'Tras cada venta puedes compartir el ticket como texto. Más adelante añadiremos soporte para impresora térmica.'**
+  String get settings_ticket_description;
+
+  /// No description provided for @stats_title.
+  ///
+  /// In es, this message translates to:
+  /// **'Estadísticas'**
+  String get stats_title;
+
+  /// No description provided for @stats_last_7_days.
+  ///
+  /// In es, this message translates to:
+  /// **'Ventas últimos 7 días'**
+  String get stats_last_7_days;
+
+  /// No description provided for @stats_top_products.
+  ///
+  /// In es, this message translates to:
+  /// **'Top Productos'**
+  String get stats_top_products;
+
+  /// No description provided for @stats_by_employee.
+  ///
+  /// In es, this message translates to:
+  /// **'Por Empleado'**
+  String get stats_by_employee;
+
+  /// No description provided for @stats_today.
+  ///
+  /// In es, this message translates to:
+  /// **'Hoy'**
+  String get stats_today;
+
+  /// No description provided for @stats_week.
+  ///
+  /// In es, this message translates to:
+  /// **'Semana'**
+  String get stats_week;
+
+  /// No description provided for @stats_month.
+  ///
+  /// In es, this message translates to:
+  /// **'Mes'**
+  String get stats_month;
+
+  /// No description provided for @stats_no_data.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin datos'**
+  String get stats_no_data;
+
+  /// No description provided for @stats_sales_unit.
+  ///
+  /// In es, this message translates to:
+  /// **'ventas'**
+  String get stats_sales_unit;
+
+  /// No description provided for @stats_sats_unit.
+  ///
+  /// In es, this message translates to:
+  /// **'sats'**
+  String get stats_sats_unit;
+
+  /// No description provided for @total_label.
+  ///
+  /// In es, this message translates to:
+  /// **'TOTAL'**
+  String get total_label;
+
+  /// No description provided for @btc_unit.
+  ///
+  /// In es, this message translates to:
+  /// **'BTC'**
+  String get btc_unit;
+
+  /// No description provided for @history_ticket.
+  ///
+  /// In es, this message translates to:
+  /// **'Ticket'**
+  String get history_ticket;
+
+  /// No description provided for @history_delete.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar'**
+  String get history_delete;
+
+  /// No description provided for @print_subject.
+  ///
+  /// In es, this message translates to:
+  /// **'Ticket de venta LaChispaPOS'**
+  String get print_subject;
+
+  /// No description provided for @print_header.
+  ///
+  /// In es, this message translates to:
+  /// **'LA  CHISPA'**
+  String get print_header;
+
+  /// No description provided for @print_subtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Punto de Venta Lightning'**
+  String get print_subtitle;
+
+  /// No description provided for @print_thanks.
+  ///
+  /// In es, this message translates to:
+  /// **'  ¡Gracias por su compra!'**
+  String get print_thanks;
+
+  /// No description provided for @print_url.
+  ///
+  /// In es, this message translates to:
+  /// **'  lachispa.me'**
+  String get print_url;
+
+  /// No description provided for @print_invoice.
+  ///
+  /// In es, this message translates to:
+  /// **'Factura:'**
+  String get print_invoice;
+
+  /// No description provided for @export_subject.
+  ///
+  /// In es, this message translates to:
+  /// **'Exportación de ventas POS Lightning'**
+  String get export_subject;
+
+  /// No description provided for @export_invalid_json.
+  ///
+  /// In es, this message translates to:
+  /// **'Archivo JSON inválido'**
+  String get export_invalid_json;
+
+  /// No description provided for @export_unknown.
+  ///
+  /// In es, this message translates to:
+  /// **'Desconocido'**
+  String get export_unknown;
+
+  /// No description provided for @export_imported_name.
+  ///
+  /// In es, this message translates to:
+  /// **'Importado'**
+  String get export_imported_name;
+
+  /// No description provided for @export_catalog_subject.
+  ///
+  /// In es, this message translates to:
+  /// **'Catálogo de productos LaChispaPOS'**
+  String get export_catalog_subject;
+
+  /// No description provided for @table_label.
+  ///
+  /// In es, this message translates to:
+  /// **'Mesa'**
+  String get table_label;
+
+  /// No description provided for @tables_title.
+  ///
+  /// In es, this message translates to:
+  /// **'Mesas'**
+  String get tables_title;
+
+  /// No description provided for @tables_active_title.
+  ///
+  /// In es, this message translates to:
+  /// **'Mesas activas'**
+  String get tables_active_title;
+
+  /// No description provided for @about_sale_desc.
+  ///
+  /// In es, this message translates to:
+  /// **'Inicia y procesa ventas con Lightning Network'**
+  String get about_sale_desc;
+
+  /// No description provided for @about_multicurrency_desc.
+  ///
+  /// In es, this message translates to:
+  /// **'Soporta 10 monedas con tasas en tiempo real'**
+  String get about_multicurrency_desc;
+
+  /// No description provided for @about_exchange_rates.
+  ///
+  /// In es, this message translates to:
+  /// **'Tasas de Cambio'**
+  String get about_exchange_rates;
+
+  /// No description provided for @about_exchange_desc.
+  ///
+  /// In es, this message translates to:
+  /// **'Cotizaciones actualizadas vía Yadio.io'**
+  String get about_exchange_desc;
+
+  /// No description provided for @about_export_desc.
+  ///
+  /// In es, this message translates to:
+  /// **'Exporta ventas a JSON para respaldo'**
+  String get about_export_desc;
+
+  /// No description provided for @about_import_desc.
+  ///
+  /// In es, this message translates to:
+  /// **'Importa ventas desde dependientes'**
+  String get about_import_desc;
+
+  /// No description provided for @about_catalog_desc.
+  ///
+  /// In es, this message translates to:
+  /// **'Productos con nombres, precios y categorías'**
+  String get about_catalog_desc;
+
+  /// No description provided for @about_nfc_desc.
+  ///
+  /// In es, this message translates to:
+  /// **'Paga acercando el dispositivo con LNURL'**
+  String get about_nfc_desc;
+
+  /// No description provided for @about_tables_desc.
+  ///
+  /// In es, this message translates to:
+  /// **'Organiza ventas por mesas'**
+  String get about_tables_desc;
+
+  /// No description provided for @about_stats_desc.
+  ///
+  /// In es, this message translates to:
+  /// **'Gráficos, tendencias y productos top'**
+  String get about_stats_desc;
+
+  /// No description provided for @about_receipt_desc.
+  ///
+  /// In es, this message translates to:
+  /// **'Comparte ticket tras cada venta'**
+  String get about_receipt_desc;
+
+  /// No description provided for @about_multilang_desc.
+  ///
+  /// In es, this message translates to:
+  /// **'Disponible en 8 idiomas'**
+  String get about_multilang_desc;
 }
 
 class _AppLocalizationsDelegate

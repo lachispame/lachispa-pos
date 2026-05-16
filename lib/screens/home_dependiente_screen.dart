@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../l10n/generated/app_localizations.dart';
+import '../core/constants/app_constants.dart';
 import '../core/theme/app_theme.dart';
 import '../core/services/export_service.dart';
 import '../providers/auth_provider.dart';
 import '../providers/cart_provider.dart';
 import '../providers/sales_provider.dart';
+import '../providers/product_provider.dart';
 import '../widgets/app_drawer.dart';
 
 class HomeDependienteScreen extends StatefulWidget {
@@ -86,7 +88,7 @@ class _HomeDependienteScreenState extends State<HomeDependienteScreen> {
       dependienteNombre: user.nombre,
       ventas: sales,
       totalSats: totalSats,
-      appVersion: '1.0.0',
+      appVersion: AppConstants.appVersion,
     );
 
     await exportService.shareJson(json: json, dependienteNombre: user.nombre);
@@ -125,6 +127,52 @@ class _HomeDependienteScreenState extends State<HomeDependienteScreen> {
         ],
       ),
     );
+  }
+
+  Future<void> _importarCatalogo() async {
+    final l10n = AppLocalizations.of(context)!;
+    final productProvider = context.read<ProductProvider>();
+
+    final data = await productProvider.pickCatalogJson();
+    if (data == null || !mounted) return;
+
+    final productos = data['productos'] as List<dynamic>?;
+    if (productos == null || productos.isEmpty) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.catalog_invalid_file), backgroundColor: Colors.red),
+        );
+      }
+      return;
+    }
+
+    if (mounted) {
+      final confirmed = await showDialog<bool>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          backgroundColor: AppTheme.cardColor,
+          title: Text(l10n.catalog_import_title),
+          content: Text(l10n.catalog_import_confirm(productos.length)),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: Text(l10n.cancel_button),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              child: Text(l10n.import_button),
+            ),
+          ],
+        ),
+      );
+
+      if (confirmed == true && mounted) {
+        final imported = await productProvider.importCatalogFromJson(data);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.catalog_imported(imported))),
+        );
+      }
+    }
   }
 
   @override
@@ -168,10 +216,24 @@ class _HomeDependienteScreenState extends State<HomeDependienteScreen> {
             ),
             const SizedBox(height: 12),
             _MenuCard(
+              icon: Icons.bar_chart,
+              title: l10n.drawer_stats,
+              subtitle: l10n.drawer_stats_subtitle,
+              onTap: () => Navigator.pushNamed(context, '/stats'),
+            ),
+            const SizedBox(height: 12),
+            _MenuCard(
               icon: Icons.file_download,
               title: l10n.export_sales,
               subtitle: l10n.import_sales_subtitle,
               onTap: _exportar,
+            ),
+            const SizedBox(height: 12),
+            _MenuCard(
+              icon: Icons.inventory_2,
+              title: l10n.drawer_import_catalog,
+              subtitle: l10n.drawer_import_catalog_subtitle,
+              onTap: _importarCatalogo,
             ),
             const SizedBox(height: 12),
             _MenuCard(

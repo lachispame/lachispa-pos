@@ -9,6 +9,7 @@ import '../providers/sales_provider.dart';
 import '../providers/cart_provider.dart';
 import '../l10n/generated/app_localizations.dart';
 
+
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key});
 
@@ -80,6 +81,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
                     onContinue: sale.estado == 'pendiente'
                         ? () => _continuarVenta(context, sale)
                         : null,
+                    onPrint: sale.estado == 'completada'
+                        ? () => _imprimirTicket(context, sale)
+                        : null,
                   );
                 },
               ),
@@ -127,6 +131,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
       Navigator.pushNamed(context, '/sale');
     }
   }
+
+  void _imprimirTicket(BuildContext context, Sale sale) {
+    Navigator.pushNamed(context, '/receipt', arguments: sale);
+  }
 }
 
 class _SaleCard extends StatelessWidget {
@@ -134,12 +142,14 @@ class _SaleCard extends StatelessWidget {
   final bool isJefe;
   final VoidCallback? onDelete;
   final VoidCallback? onContinue;
+  final VoidCallback? onPrint;
 
   const _SaleCard({
     required this.sale,
     required this.isJefe,
     this.onDelete,
     this.onContinue,
+    this.onPrint,
   });
 
   @override
@@ -269,21 +279,38 @@ class _SaleCard extends StatelessWidget {
                 ),
               ],
             ),
-          ] else if (isJefe) ...[
+          ] else if (sale.estado == 'completada') ...[
             const SizedBox(height: 12),
-            SizedBox(
-              width: double.infinity,
-              child: OutlinedButton.icon(
-                onPressed: onDelete,
-                icon: const Icon(Icons.delete, color: Colors.red),
-                label: const Text(
-                  'Eliminar',
-                  style: TextStyle(color: Colors.red),
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: onPrint,
+                    icon: const Icon(Icons.print, color: AppTheme.primaryColor),
+                    label: Text(
+                      l10n.history_ticket,
+                      style: const TextStyle(color: AppTheme.primaryColor),
+                    ),
+                    style: OutlinedButton.styleFrom(
+                      side: const BorderSide(color: AppTheme.primaryColor),
+                    ),
+                  ),
                 ),
-                style: OutlinedButton.styleFrom(
-                  side: const BorderSide(color: Colors.red),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: onDelete,
+                    icon: const Icon(Icons.delete, color: Colors.red),
+                    label: Text(
+                      l10n.delete_button,
+                      style: const TextStyle(color: Colors.red),
+                    ),
+                    style: OutlinedButton.styleFrom(
+                      side: const BorderSide(color: Colors.red),
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
           ],
         ],

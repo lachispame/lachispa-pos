@@ -148,22 +148,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
             const SizedBox(height: 24),
             Text(
-              'O ingrese manualmente:',
+              l10n.settings_manual_entry,
               style: TextStyle(fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 16),
             TextField(
               controller: _urlController,
               decoration: InputDecoration(
-                labelText: 'URL',
-                hintText: 'https://lachispa.me o http://192.168.1.x:5000',
+                labelText: l10n.settings_url_label,
+                hintText: l10n.settings_url_hint,
               ),
             ),
             const SizedBox(height: 16),
             TextField(
               controller: _apiKeyController,
               obscureText: true,
-              decoration: const InputDecoration(labelText: 'API Key'),
+              decoration: InputDecoration(labelText: l10n.settings_api_key_label),
             ),
             const SizedBox(height: 24),
             if (_connectionOk != null)
@@ -203,6 +203,31 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
                     : Text(l10n.save),
+              ),
+            ),
+            const SizedBox(height: 32),
+            const Divider(),
+            const SizedBox(height: 16),
+            Text(
+              l10n.settings_ticket_section,
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  children: [
+                    const Icon(Icons.receipt, color: AppTheme.primaryColor),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        l10n.settings_ticket_description,
+                        style: TextStyle(fontSize: 13, color: Colors.grey[400]),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
