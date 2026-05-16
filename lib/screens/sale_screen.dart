@@ -46,6 +46,7 @@ class _SaleScreenState extends State<SaleScreen> {
     context.read<ProductProvider>().loadProducts();
     context.read<TableProvider>().loadSavedTables();
     _checkRecoverableCart();
+    _checkPendingSale();
   }
 
   Future<void> _checkRecoverableCart() async {
@@ -80,6 +81,59 @@ class _SaleScreenState extends State<SaleScreen> {
         ],
       ),
     );
+  }
+
+  Future<void> _checkPendingSale() async {
+    final l10n = AppLocalizations.of(context)!;
+    final auth = context.read<AuthProvider>();
+    if (auth.isJefe || !mounted) return;
+
+    final salesProvider = context.read<SalesProvider>();
+    final pending = await salesProvider.getPendingSales(auth.currentUser!.id);
+    if (pending.isEmpty || !mounted) return;
+
+    final sale = pending.first;
+    final cart = context.read<CartProvider>();
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: AppTheme.cardColor,
+        title: Text(l10n.pending_sale_title),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(l10n.pending_sale_message),
+            const SizedBox(height: 8),
+            Text('≈ ${sale.totalSats} sats'),
+            Text(
+              '${Moneda.fromCodigo(sale.moneda).simbolo}${sale.totalFiat.toStringAsFixed(2)} ${sale.moneda}',
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, null),
+            child: Text(l10n.discard_sale),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(l10n.continue_sale),
+          ),
+        ],
+      ),
+    );
+
+    if (!mounted) return;
+
+    if (confirmed == null) {
+      await salesProvider.deleteSale(sale.id);
+    } else if (confirmed) {
+      await cart.loadFromPendingSale(sale);
+      await salesProvider.deleteSale(sale.id);
+    }
   }
 
   @override
@@ -583,7 +637,7 @@ class _SaleScreenState extends State<SaleScreen> {
     if (items.isNotEmpty) {
       await cart.clearCart();
       await tableProvider.selectTable(table);
-      cart.loadFromPendingSale(Sale(
+      await cart.loadFromPendingSale(Sale(
         id: '',
         userId: '',
         userNombre: '',
