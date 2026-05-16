@@ -181,21 +181,22 @@ class CartProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void loadFromPendingSale(Sale sale) {
-    _items = sale.items
-        .map(
-          (item) => CartItem(
-            id: item.id,
-            sessionId: _sessionService.getSessionId(),
-            nombre: item.nombre,
-            precioUnitario: item.precioUnitario,
-            moneda: item.moneda,
-            cantidad: item.cantidad,
-            subtotalFiat: item.subtotalFiat,
-            subtotalSats: item.subtotalSats,
-          ),
-        )
-        .toList();
+  Future<void> loadFromPendingSale(Sale sale) async {
+    await _sessionService.clearCart();
+    _items = [];
+    for (final item in sale.items) {
+      final cartItem = CartItem(
+        sessionId: _sessionService.getSessionId(),
+        nombre: item.nombre,
+        precioUnitario: item.precioUnitario,
+        moneda: item.moneda,
+        cantidad: item.cantidad,
+        subtotalFiat: item.subtotalFiat,
+        subtotalSats: item.subtotalSats,
+      );
+      await _sessionService.saveCartItem(cartItem);
+      _items.add(cartItem);
+    }
     _monedaVenta = Moneda.fromCodigo(sale.moneda);
     _rateUsado = sale.rateUsado;
     _totalSats = sale.totalSats;

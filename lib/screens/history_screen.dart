@@ -126,7 +126,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
   Future<void> _continuarVenta(BuildContext context, Sale sale) async {
     final cart = context.read<CartProvider>();
-    cart.loadFromPendingSale(sale);
+    final salesProvider = context.read<SalesProvider>();
+    await cart.loadFromPendingSale(sale);
+    await salesProvider.deleteSale(sale.id);
     if (context.mounted) {
       Navigator.pushNamed(context, '/sale');
     }
