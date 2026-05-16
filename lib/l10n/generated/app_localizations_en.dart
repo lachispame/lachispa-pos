@@ -775,4 +775,42 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tables_active_title => 'Active Tables';
+
+  @override
+  String get about_sale_desc =>
+      'Start and process sales with Lightning Network';
+
+  @override
+  String get about_multicurrency_desc =>
+      'Supports 10 currencies with real-time rates';
+
+  @override
+  String get about_exchange_rates => 'Exchange Rates';
+
+  @override
+  String get about_exchange_desc => 'Real-time quotes via Yadio.io';
+
+  @override
+  String get about_export_desc => 'Export sales to JSON for backup';
+
+  @override
+  String get about_import_desc => 'Import sales from employees';
+
+  @override
+  String get about_catalog_desc => 'Products with names, prices and categories';
+
+  @override
+  String get about_nfc_desc => 'Tap to pay using LNURL';
+
+  @override
+  String get about_tables_desc => 'Organize sales by tables';
+
+  @override
+  String get about_stats_desc => 'Charts, trends and top products';
+
+  @override
+  String get about_receipt_desc => 'Share receipt after each sale';
+
+  @override
+  String get about_multilang_desc => 'Available in 8 languages';
 }

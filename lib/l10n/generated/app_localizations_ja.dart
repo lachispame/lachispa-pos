@@ -775,4 +775,40 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get tables_active_title => 'Mesas activas';
+
+  @override
+  String get about_sale_desc => 'Lightning Networkで売上を開始・処理';
+
+  @override
+  String get about_multicurrency_desc => '10通貨対応、リアルタイムレート';
+
+  @override
+  String get about_exchange_rates => '為替レート';
+
+  @override
+  String get about_exchange_desc => 'Yadio.ioによるリアルタイム見積もり';
+
+  @override
+  String get about_export_desc => '売上をJSONにエクスポート';
+
+  @override
+  String get about_import_desc => '従業員から売上をインポート';
+
+  @override
+  String get about_catalog_desc => '商品名、価格、カテゴリを管理';
+
+  @override
+  String get about_nfc_desc => 'LNURLでNFC支払い';
+
+  @override
+  String get about_tables_desc => 'テーブルごとに売上を管理';
+
+  @override
+  String get about_stats_desc => 'グラフ、トレンド、人気商品';
+
+  @override
+  String get about_receipt_desc => '各売上後にレシートを共有';
+
+  @override
+  String get about_multilang_desc => '8言語対応';
 }

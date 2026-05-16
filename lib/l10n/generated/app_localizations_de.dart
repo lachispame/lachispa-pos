@@ -781,4 +781,42 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get tables_active_title => 'Mesas activas';
+
+  @override
+  String get about_sale_desc =>
+      'Verkäufe mit Lightning Network starten und abwickeln';
+
+  @override
+  String get about_multicurrency_desc =>
+      'Unterstützt 10 Währungen mit Echtzeitkursen';
+
+  @override
+  String get about_exchange_rates => 'Wechselkurse';
+
+  @override
+  String get about_exchange_desc => 'Aktuelle Kurse über Yadio.io';
+
+  @override
+  String get about_export_desc => 'Verkäufe als JSON exportieren';
+
+  @override
+  String get about_import_desc => 'Verkäufe von Mitarbeitern importieren';
+
+  @override
+  String get about_catalog_desc => 'Produkte mit Namen, Preisen und Kategorien';
+
+  @override
+  String get about_nfc_desc => 'Mit NFC per LNURL bezahlen';
+
+  @override
+  String get about_tables_desc => 'Verkäufe nach Tischen organisieren';
+
+  @override
+  String get about_stats_desc => 'Diagramme, Trends und Top-Produkte';
+
+  @override
+  String get about_receipt_desc => 'Beleg nach jedem Verkauf teilen';
+
+  @override
+  String get about_multilang_desc => 'Verfügbar in 8 Sprachen';
 }

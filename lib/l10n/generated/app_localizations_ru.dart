@@ -778,4 +778,43 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get tables_active_title => 'Mesas activas';
+
+  @override
+  String get about_sale_desc =>
+      'Начинайте и обрабатывайте продажи через Lightning Network';
+
+  @override
+  String get about_multicurrency_desc =>
+      'Поддерживает 10 валют с курсами в реальном времени';
+
+  @override
+  String get about_exchange_rates => 'Курсы валют';
+
+  @override
+  String get about_exchange_desc =>
+      'Котировки в реальном времени через Yadio.io';
+
+  @override
+  String get about_export_desc => 'Экспорт продаж в JSON';
+
+  @override
+  String get about_import_desc => 'Импорт продаж от сотрудников';
+
+  @override
+  String get about_catalog_desc => 'Товары с названиями, ценами и категориями';
+
+  @override
+  String get about_nfc_desc => 'Оплата через NFC с LNURL';
+
+  @override
+  String get about_tables_desc => 'Организация продаж по столам';
+
+  @override
+  String get about_stats_desc => 'Графики, тренды и топ товары';
+
+  @override
+  String get about_receipt_desc => 'Поделиться чеком после каждой продажи';
+
+  @override
+  String get about_multilang_desc => 'Доступно на 8 языках';
 }

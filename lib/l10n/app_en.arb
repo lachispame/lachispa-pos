@@ -272,6 +272,18 @@
 
   "table_label": "Table",
   "tables_title": "Tables",
-  "tables_active_title": "Active Tables"
+  "tables_active_title": "Active Tables",
 
+  "about_sale_desc": "Start and process sales with Lightning Network",
+  "about_multicurrency_desc": "Supports 10 currencies with real-time rates",
+  "about_exchange_rates": "Exchange Rates",
+  "about_exchange_desc": "Real-time quotes via Yadio.io",
+  "about_export_desc": "Export sales to JSON for backup",
+  "about_import_desc": "Import sales from employees",
+  "about_catalog_desc": "Products with names, prices and categories",
+  "about_nfc_desc": "Tap to pay using LNURL",
+  "about_tables_desc": "Organize sales by tables",
+  "about_stats_desc": "Charts, trends and top products",
+  "about_receipt_desc": "Share receipt after each sale",
+  "about_multilang_desc": "Available in 8 languages"
 }

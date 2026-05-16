@@ -1609,6 +1609,78 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Mesas activas'**
   String get tables_active_title;
+
+  /// No description provided for @about_sale_desc.
+  ///
+  /// In es, this message translates to:
+  /// **'Inicia y procesa ventas con Lightning Network'**
+  String get about_sale_desc;
+
+  /// No description provided for @about_multicurrency_desc.
+  ///
+  /// In es, this message translates to:
+  /// **'Soporta 10 monedas con tasas en tiempo real'**
+  String get about_multicurrency_desc;
+
+  /// No description provided for @about_exchange_rates.
+  ///
+  /// In es, this message translates to:
+  /// **'Tasas de Cambio'**
+  String get about_exchange_rates;
+
+  /// No description provided for @about_exchange_desc.
+  ///
+  /// In es, this message translates to:
+  /// **'Cotizaciones actualizadas vía Yadio.io'**
+  String get about_exchange_desc;
+
+  /// No description provided for @about_export_desc.
+  ///
+  /// In es, this message translates to:
+  /// **'Exporta ventas a JSON para respaldo'**
+  String get about_export_desc;
+
+  /// No description provided for @about_import_desc.
+  ///
+  /// In es, this message translates to:
+  /// **'Importa ventas desde dependientes'**
+  String get about_import_desc;
+
+  /// No description provided for @about_catalog_desc.
+  ///
+  /// In es, this message translates to:
+  /// **'Productos con nombres, precios y categorías'**
+  String get about_catalog_desc;
+
+  /// No description provided for @about_nfc_desc.
+  ///
+  /// In es, this message translates to:
+  /// **'Paga acercando el dispositivo con LNURL'**
+  String get about_nfc_desc;
+
+  /// No description provided for @about_tables_desc.
+  ///
+  /// In es, this message translates to:
+  /// **'Organiza ventas por mesas'**
+  String get about_tables_desc;
+
+  /// No description provided for @about_stats_desc.
+  ///
+  /// In es, this message translates to:
+  /// **'Gráficos, tendencias y productos top'**
+  String get about_stats_desc;
+
+  /// No description provided for @about_receipt_desc.
+  ///
+  /// In es, this message translates to:
+  /// **'Comparte ticket tras cada venta'**
+  String get about_receipt_desc;
+
+  /// No description provided for @about_multilang_desc.
+  ///
+  /// In es, this message translates to:
+  /// **'Disponible en 8 idiomas'**
+  String get about_multilang_desc;
 }
 
 class _AppLocalizationsDelegate

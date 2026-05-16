@@ -266,5 +266,18 @@
   "export_unknown": "不明",
   "export_imported_name": "インポート済み",
 
-  "export_catalog_subject": "LaChispaPOS商品カタログ"
+  "export_catalog_subject": "LaChispaPOS商品カタログ",
+
+  "about_sale_desc": "Lightning Networkで売上を開始・処理",
+  "about_multicurrency_desc": "10通貨対応、リアルタイムレート",
+  "about_exchange_rates": "為替レート",
+  "about_exchange_desc": "Yadio.ioによるリアルタイム見積もり",
+  "about_export_desc": "売上をJSONにエクスポート",
+  "about_import_desc": "従業員から売上をインポート",
+  "about_catalog_desc": "商品名、価格、カテゴリを管理",
+  "about_nfc_desc": "LNURLでNFC支払い",
+  "about_tables_desc": "テーブルごとに売上を管理",
+  "about_stats_desc": "グラフ、トレンド、人気商品",
+  "about_receipt_desc": "各売上後にレシートを共有",
+  "about_multilang_desc": "8言語対応"
 }

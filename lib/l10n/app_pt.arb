@@ -266,5 +266,18 @@
   "export_unknown": "Desconhecido",
   "export_imported_name": "Importado",
 
-  "export_catalog_subject": "Catálogo de produtos LaChispaPOS"
+  "export_catalog_subject": "Catálogo de produtos LaChispaPOS",
+
+  "about_sale_desc": "Inicie e processe vendas com Lightning Network",
+  "about_multicurrency_desc": "Suporta 10 moedas com taxas em tempo real",
+  "about_exchange_rates": "Taxas de Câmbio",
+  "about_exchange_desc": "Cotações em tempo real via Yadio.io",
+  "about_export_desc": "Exporte vendas para JSON",
+  "about_import_desc": "Importe vendas de funcionários",
+  "about_catalog_desc": "Produtos com nomes, preços e categorias",
+  "about_nfc_desc": "Pague com NFC usando LNURL",
+  "about_tables_desc": "Organize vendas por mesas",
+  "about_stats_desc": "Gráficos, tendências e produtos top",
+  "about_receipt_desc": "Compartilhe recibo após cada venda",
+  "about_multilang_desc": "Disponível em 8 idiomas"
 }
