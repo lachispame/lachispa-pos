@@ -37,6 +37,20 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
     }
+
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            val abi = filters.find { it.filterType == com.android.build.OutputFile.ABI }?.identifier
+            if (abi != null) {
+                val abiName = when (abi) {
+                    "arm64-v8a" -> "arm64"
+                    "armeabi-v7a" -> "armeabi"
+                    else -> abi
+                }
+                outputFileName = "lachispapos-v${variant.versionName}-${abiName}.apk"
+            }
+        }
+    }
 }
 
 flutter {
