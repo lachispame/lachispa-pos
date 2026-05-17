@@ -166,6 +166,8 @@
   "tap_to_pay": "Tocca per pagare",
   "nfc_reading": "Lettura NFC...",
   "lnurl_error": "Errore del server",
+  "connection_error": "Impossibile connettersi al server. Controlla la connessione Internet.",
+  "server_error": "Errore del server. Riprova più tardi.",
 
   "drawer_stats": "STATISTICHE",
   "drawer_stats_subtitle": "Vendite, grafici e top prodotti",

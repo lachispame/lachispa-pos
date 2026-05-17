@@ -476,6 +476,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get lnurl_error => 'Server error';
 
   @override
+  String get connection_error =>
+      'Could not connect to the server. Check your internet connection.';
+
+  @override
+  String get server_error => 'Server error. Please try again later.';
+
+  @override
   String get drawer_stats => 'STATISTICS';
 
   @override

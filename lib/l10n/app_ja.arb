@@ -166,6 +166,8 @@
   "tap_to_pay": "タップして支払う",
   "nfc_reading": "NFC読み取り中...",
   "lnurl_error": "サーバーエラー",
+  "connection_error": "サーバーに接続できませんでした。インターネット接続を確認してください。",
+  "server_error": "サーバーエラー。後でもう一度お試しください。",
 
   "drawer_stats": "統計",
   "drawer_stats_subtitle": "売上、グラフ、トップ商品",

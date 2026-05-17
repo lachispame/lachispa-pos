@@ -477,6 +477,13 @@ class AppLocalizationsPt extends AppLocalizations {
   String get lnurl_error => 'Erro do servidor';
 
   @override
+  String get connection_error =>
+      'Não foi possível conectar ao servidor. Verifique sua conexão com a internet.';
+
+  @override
+  String get server_error => 'Erro do servidor. Tente novamente mais tarde.';
+
+  @override
   String get drawer_stats => 'ESTATÍSTICAS';
 
   @override

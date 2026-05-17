@@ -477,6 +477,13 @@ class AppLocalizationsRu extends AppLocalizations {
   String get lnurl_error => 'Ошибка сервера';
 
   @override
+  String get connection_error =>
+      'Не удалось подключиться к серверу. Проверьте подключение к Интернету.';
+
+  @override
+  String get server_error => 'Ошибка сервера. Повторите попытку позже.';
+
+  @override
   String get drawer_stats => 'СТАТИСТИКА';
 
   @override

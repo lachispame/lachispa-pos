@@ -480,6 +480,14 @@ class AppLocalizationsDe extends AppLocalizations {
   String get lnurl_error => 'Serverfehler';
 
   @override
+  String get connection_error =>
+      'Keine Verbindung zum Server. Überprüfen Sie Ihre Internetverbindung.';
+
+  @override
+  String get server_error =>
+      'Serverfehler. Bitte versuchen Sie es später erneut.';
+
+  @override
   String get drawer_stats => 'STATISTIK';
 
   @override

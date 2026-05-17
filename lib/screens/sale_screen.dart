@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:provider/provider.dart';
@@ -380,9 +383,15 @@ class _SaleScreenState extends State<SaleScreen> {
       _esperarPago(invoice.paymentHash, pendingSaleId);
     } catch (e) {
       if (mounted) {
+        String message;
+        if (e is SocketException || e is TimeoutException) {
+          message = l10n.connection_error;
+        } else {
+          message = '${l10n.error_creating_invoice}: $e';
+        }
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('${l10n.error_creating_invoice}: $e'),
+            content: Text(message),
             backgroundColor: Colors.red,
           ),
         );

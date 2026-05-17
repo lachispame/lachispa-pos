@@ -1040,6 +1040,18 @@ abstract class AppLocalizations {
   /// **'Error del servidor'**
   String get lnurl_error;
 
+  /// No description provided for @connection_error.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo conectar al servidor. Revisa tu conexión a internet.'**
+  String get connection_error;
+
+  /// No description provided for @server_error.
+  ///
+  /// In es, this message translates to:
+  /// **'Error del servidor. Intenta de nuevo más tarde.'**
+  String get server_error;
+
   /// No description provided for @drawer_stats.
   ///
   /// In es, this message translates to:

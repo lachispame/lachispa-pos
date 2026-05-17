@@ -166,6 +166,8 @@
   "tap_to_pay": "Zum Bezahlen tippen",
   "nfc_reading": "NFC wird gelesen...",
   "lnurl_error": "Serverfehler",
+  "connection_error": "Keine Verbindung zum Server. Überprüfen Sie Ihre Internetverbindung.",
+  "server_error": "Serverfehler. Bitte versuchen Sie es später erneut.",
 
   "drawer_stats": "STATISTIK",
   "drawer_stats_subtitle": "Verkäufe, Diagramme und Top-Produkte",

@@ -475,6 +475,12 @@ class AppLocalizationsJa extends AppLocalizations {
   String get lnurl_error => 'サーバーエラー';
 
   @override
+  String get connection_error => 'サーバーに接続できませんでした。インターネット接続を確認してください。';
+
+  @override
+  String get server_error => 'サーバーエラー。後でもう一度お試しください。';
+
+  @override
   String get drawer_stats => '統計';
 
   @override
