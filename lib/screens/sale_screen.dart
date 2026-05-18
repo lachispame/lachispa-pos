@@ -384,8 +384,10 @@ class _SaleScreenState extends State<SaleScreen> {
     } catch (e) {
       if (mounted) {
         String message;
-        if (e is SocketException || e is TimeoutException) {
+        if (e is SocketException) {
           message = l10n.connection_error;
+        } else if (e is TimeoutException) {
+          message = l10n.server_error;
         } else {
           message = '${l10n.error_creating_invoice}: $e';
         }
