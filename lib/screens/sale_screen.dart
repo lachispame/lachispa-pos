@@ -433,7 +433,22 @@ class _SaleScreenState extends State<SaleScreen> {
 
     final cart = context.read<CartProvider>();
     final auth = context.read<AuthProvider>();
-    final user = auth.currentUser!;
+    final user = auth.currentUser;
+
+    if (user?.lndhubUrl == null || user?.lndhubCreds == null) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.configure_api_in_settings)),
+        );
+        setState(() => _isReadingNfc = false);
+      }
+      return;
+    }
+
+    LachispaApiService.instance.configure(
+      baseUrl: user!.lndhubUrl!,
+      apiKey: user.lndhubCreds!,
+    );
 
     await _nfcService.readLnurlFromCard(
       onLnurlReceived: (lnurl) async {
@@ -462,17 +477,10 @@ class _SaleScreenState extends State<SaleScreen> {
 
           await _nfcService.stopReading();
 
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(l10n.waiting_for_payment),
-                backgroundColor: Colors.green,
-              ),
-            );
-          }
+          LachispaApiService.instance.connectWebSocket(user.lndhubCreds!);
 
-          final salesProvider = context.read<SalesProvider>();
-          final pendingSaleId = await salesProvider.createPendingSale(
+          _paymentRequest = invoiceResult.paymentRequest;
+          _pendingSaleId = await context.read<SalesProvider>().createPendingSale(
             userId: user.id,
             userNombre: user.nombre,
             items: cart.items,
@@ -482,7 +490,10 @@ class _SaleScreenState extends State<SaleScreen> {
             rateUsado: cart.rateUsado,
             invoiceId: invoiceResult.paymentHash,
           );
-          _pendingSaleId = pendingSaleId;
+
+          if (mounted) {
+            setState(() => _showPaymentSheet = true);
+          }
 
           _esperarPago(invoiceResult.paymentHash, _pendingSaleId!);
         } catch (e) {
