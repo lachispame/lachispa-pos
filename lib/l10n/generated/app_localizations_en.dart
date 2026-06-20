@@ -507,6 +507,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get drawer_export_sales_subtitle => 'Export sales to JSON';
 
   @override
+  String get drawer_export_catalog => 'EXPORT CATALOG';
+
+  @override
+  String get drawer_export_catalog_subtitle => 'Share products with employees';
+
+  @override
   String get drawer_import_catalog => 'IMPORT CATALOG';
 
   @override
@@ -589,6 +595,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get catalog_valid_price_required => 'Enter a valid positive price';
+
+  @override
+  String get catalog_stock_label => 'Stock';
+
+  @override
+  String get catalog_stock_hint => 'Leave empty for unlimited';
+
+  @override
+  String get catalog_stock_add => 'Add stock';
+
+  @override
+  String get catalog_stock_remove => 'Remove stock';
+
+  @override
+  String get catalog_out_of_stock => 'OUT OF STOCK';
 
   @override
   String get receipt_title => 'Ticket';

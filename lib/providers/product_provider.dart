@@ -38,12 +38,14 @@ class ProductProvider extends ChangeNotifier {
     required double precio,
     required String moneda,
     String? categoria,
+    int? stock,
   }) async {
     final product = Product.create(
       nombre: nombre,
       precio: precio,
       moneda: moneda,
       categoria: categoria,
+      stock: stock,
     );
 
     final db = await DatabaseHelper.instance.database;
@@ -85,6 +87,28 @@ class ProductProvider extends ChangeNotifier {
         .toList();
   }
 
+  Future<void> decrementStockByName(String nombre, int cantidad) async {
+    final index = _products.indexWhere(
+      (p) => p.nombre == nombre && p.stock != null,
+    );
+    if (index == -1) return;
+
+    final product = _products[index];
+    final newStock = (product.stock! - cantidad).clamp(0, product.stock!);
+    final updated = product.copyWith(stock: newStock);
+
+    final db = await DatabaseHelper.instance.database;
+    await db.update(
+      'products',
+      {'stock': newStock},
+      where: 'id = ?',
+      whereArgs: [product.id],
+    );
+
+    _products[index] = updated;
+    notifyListeners();
+  }
+
   Future<void> exportCatalog() async {
     final json = const JsonEncoder.withIndent('  ').convert(
       _products.map((p) => {
@@ -92,6 +116,7 @@ class ProductProvider extends ChangeNotifier {
         'precio': p.precio,
         'moneda': p.moneda,
         'categoria': p.categoria,
+        if (p.stock != null) 'stock': p.stock,
       }).toList(),
     );
 
@@ -128,6 +153,7 @@ class ProductProvider extends ChangeNotifier {
         precio: precio,
         moneda: moneda,
         categoria: p['categoria'] as String?,
+        stock: (p['stock'] as num?)?.toInt(),
       );
       imported++;
     }

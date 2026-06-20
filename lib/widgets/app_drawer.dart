@@ -104,6 +104,15 @@ class AppDrawer extends StatelessWidget {
                         Navigator.pushNamed(context, '/catalog');
                       },
                     ),
+                    _DrawerItem(
+                      icon: Icons.file_upload_outlined,
+                      title: l10n.drawer_export_catalog,
+                      subtitle: l10n.drawer_export_catalog_subtitle,
+                      onTap: () {
+                        Navigator.pop(context);
+                        context.read<ProductProvider>().exportCatalog();
+                      },
+                    ),
                   ],
                   const Divider(color: Colors.grey),
                   if (isJefe) ...[

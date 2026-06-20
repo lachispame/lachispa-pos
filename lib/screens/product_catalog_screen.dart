@@ -33,120 +33,163 @@ class _ProductCatalogScreenState extends State<ProductCatalogScreen> {
         );
     final controllerCategoria =
         TextEditingController(text: product?.categoria ?? '');
+    final controllerStock = TextEditingController(
+      text: product?.stock?.toString() ?? '',
+    );
     String moneda = product?.moneda ?? 'USD';
+    bool tieneStock = product?.stock != null;
 
     showDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: AppTheme.cardColor,
-        title: Text(
-          product != null ? l10n.catalog_edit_product : l10n.catalog_new_product,
-        ),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: controllerNombre,
-                      decoration: InputDecoration(
-                        labelText: l10n.catalog_product_name_label,
-                        hintText: l10n.catalog_product_name_hint,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setDialogState) => AlertDialog(
+          backgroundColor: AppTheme.cardColor,
+          title: Text(
+            product != null ? l10n.catalog_edit_product : l10n.catalog_new_product,
+          ),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: controllerNombre,
+                        decoration: InputDecoration(
+                          labelText: l10n.catalog_product_name_label,
+                          hintText: l10n.catalog_product_name_hint,
+                        ),
                       ),
                     ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.qr_code_scanner),
-                    onPressed: () => _scanQrForForm(controllerNombre, controllerPrecio),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: controllerPrecio,
-                decoration: InputDecoration(labelText: l10n.catalog_product_price_label),
-                keyboardType: TextInputType.number,
-                inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d.]'))],
-              ),
-              const SizedBox(height: 12),
-              DropdownButtonFormField<String>(
-                value: moneda,
-                decoration: InputDecoration(labelText: l10n.catalog_product_currency_label),
-                dropdownColor: AppTheme.cardColor,
-                items: ctx.read<CurrencySettingsProvider>().displaySequence
-                    .map(
-                      (m) => DropdownMenuItem(value: m, child: Text(m)),
-                    )
-                    .toList(),
-                onChanged: (v) => moneda = v ?? 'USD',
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: controllerCategoria,
-                decoration: InputDecoration(
-                  labelText: l10n.catalog_category_label,
-                  hintText: l10n.catalog_category_hint,
+                    IconButton(
+                      icon: const Icon(Icons.qr_code_scanner),
+                      onPressed: () => _scanQrForForm(controllerNombre, controllerPrecio),
+                    ),
+                  ],
                 ),
-              ),
-            ],
+                const SizedBox(height: 12),
+                TextField(
+                  controller: controllerPrecio,
+                  decoration: InputDecoration(labelText: l10n.catalog_product_price_label),
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'[\d.]'))],
+                ),
+                const SizedBox(height: 12),
+                DropdownButtonFormField<String>(
+                  value: moneda,
+                  decoration: InputDecoration(labelText: l10n.catalog_product_currency_label),
+                  dropdownColor: AppTheme.cardColor,
+                  items: ctx.read<CurrencySettingsProvider>().displaySequence
+                      .map(
+                        (m) => DropdownMenuItem(value: m, child: Text(m)),
+                      )
+                      .toList(),
+                  onChanged: (v) => moneda = v ?? 'USD',
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: controllerCategoria,
+                  decoration: InputDecoration(
+                    labelText: l10n.catalog_category_label,
+                    hintText: l10n.catalog_category_hint,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 160,
+                      child: TextField(
+                        controller: controllerStock,
+                        decoration: InputDecoration(
+                          labelText: l10n.catalog_stock_label,
+                          hintText: l10n.catalog_stock_hint,
+                        ),
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                        enabled: tieneStock,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    TextButton(
+                      onPressed: () {
+                        setDialogState(() {
+                          tieneStock = !tieneStock;
+                          if (!tieneStock) controllerStock.clear();
+                        });
+                      },
+                      child: Text(
+                        tieneStock ? l10n.catalog_stock_remove : l10n.catalog_stock_add,
+                        style: TextStyle(
+                          color: tieneStock ? Colors.red[300] : AppTheme.primaryColor,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: Text(l10n.cancel_button),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              final nombre = controllerNombre.text.trim();
-              final precioTxt = controllerPrecio.text.trim();
-              if (nombre.isEmpty || precioTxt.isEmpty) {
-                if (ctx.mounted) {
-                  ScaffoldMessenger.of(ctx).showSnackBar(
-                    SnackBar(content: Text(l10n.catalog_name_price_required), backgroundColor: Colors.red),
-                  );
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: Text(l10n.cancel_button),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                final nombre = controllerNombre.text.trim();
+                final precioTxt = controllerPrecio.text.trim();
+                if (nombre.isEmpty || precioTxt.isEmpty) {
+                  if (ctx.mounted) {
+                    ScaffoldMessenger.of(ctx).showSnackBar(
+                      SnackBar(content: Text(l10n.catalog_name_price_required), backgroundColor: Colors.red),
+                    );
+                  }
+                  return;
                 }
-                return;
-              }
 
-              final precio = double.tryParse(precioTxt);
-              if (precio == null || precio <= 0) {
-                if (ctx.mounted) {
-                  ScaffoldMessenger.of(ctx).showSnackBar(
-                    SnackBar(content: Text(l10n.catalog_valid_price_required), backgroundColor: Colors.red),
-                  );
+                final precio = double.tryParse(precioTxt);
+                if (precio == null || precio <= 0) {
+                  if (ctx.mounted) {
+                    ScaffoldMessenger.of(ctx).showSnackBar(
+                      SnackBar(content: Text(l10n.catalog_valid_price_required), backgroundColor: Colors.red),
+                    );
+                  }
+                  return;
                 }
-                return;
-              }
 
-              final categoria = controllerCategoria.text.trim();
-              final provider = context.read<ProductProvider>();
+                final categoria = controllerCategoria.text.trim();
+                final stock = tieneStock ? int.tryParse(controllerStock.text.trim()) : null;
+                final provider = context.read<ProductProvider>();
 
-              if (product != null) {
-                await provider.updateProduct(
-                  product.copyWith(
+                if (product != null) {
+                  await provider.updateProduct(
+                    product.copyWith(
+                      nombre: nombre,
+                      precio: precio,
+                      moneda: moneda,
+                      categoria: categoria.isNotEmpty ? categoria : null,
+                      stock: stock,
+                    ),
+                  );
+                } else {
+                  await provider.addProduct(
                     nombre: nombre,
                     precio: precio,
                     moneda: moneda,
                     categoria: categoria.isNotEmpty ? categoria : null,
-                  ),
-                );
-              } else {
-                await provider.addProduct(
-                  nombre: nombre,
-                  precio: precio,
-                  moneda: moneda,
-                  categoria: categoria.isNotEmpty ? categoria : null,
-                );
-              }
+                    stock: stock,
+                  );
+                }
 
-              if (ctx.mounted) Navigator.pop(ctx);
-            },
-            child: Text(product != null ? l10n.catalog_save : l10n.catalog_add),
-          ),
-        ],
+                if (ctx.mounted) Navigator.pop(ctx);
+              },
+              child: Text(product != null ? l10n.catalog_save : l10n.catalog_add),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -246,6 +289,11 @@ class _ProductCatalogScreenState extends State<ProductCatalogScreen> {
         title: Text(l10n.catalog_title),
         actions: [
           IconButton(
+            icon: const Icon(Icons.file_upload_outlined),
+            tooltip: l10n.catalog_export_tooltip,
+            onPressed: () => context.read<ProductProvider>().exportCatalog(),
+          ),
+          IconButton(
             icon: const Icon(Icons.add),
             onPressed: () => _showProductForm(),
           ),
@@ -296,11 +344,25 @@ class _ProductCatalogScreenState extends State<ProductCatalogScreen> {
                         title: Text(product.nombre,
                             style: const TextStyle(
                                 fontWeight: FontWeight.w600)),
-                        subtitle: product.categoria != null
-                            ? Text(product.categoria!,
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (product.categoria != null)
+                              Text(product.categoria!,
+                                  style: TextStyle(
+                                      fontSize: 12, color: Colors.grey[500])),
+                            if (product.stock != null)
+                              Text(
+                                '${l10n.catalog_stock_label}: ${product.stock}',
                                 style: TextStyle(
-                                    fontSize: 12, color: Colors.grey[500]))
-                            : null,
+                                  fontSize: 11,
+                                  color: product.stock == 0
+                                      ? Colors.red[300]
+                                      : Colors.grey[500],
+                                ),
+                              ),
+                          ],
+                        ),
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [

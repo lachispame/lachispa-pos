@@ -8,6 +8,7 @@ class Product {
   final double precio;
   final String moneda;
   final String? categoria;
+  final int? stock;
   final DateTime createdAt;
 
   Product({
@@ -16,6 +17,7 @@ class Product {
     required this.precio,
     required this.moneda,
     this.categoria,
+    this.stock,
     required this.createdAt,
   });
 
@@ -24,6 +26,7 @@ class Product {
     required double precio,
     required String moneda,
     String? categoria,
+    int? stock,
   }) {
     return Product(
       id: Product._uuid.v4(),
@@ -31,6 +34,7 @@ class Product {
       precio: precio,
       moneda: moneda,
       categoria: categoria,
+      stock: stock,
       createdAt: DateTime.now(),
     );
   }
@@ -42,6 +46,7 @@ class Product {
       'precio': precio,
       'moneda': moneda,
       'categoria': categoria,
+      'stock': stock,
       'created_at': createdAt.toIso8601String(),
     };
   }
@@ -53,6 +58,7 @@ class Product {
       precio: (map['precio'] as num).toDouble(),
       moneda: map['moneda'] as String,
       categoria: map['categoria'] as String?,
+      stock: map['stock'] as int?,
       createdAt: DateTime.tryParse(map['created_at'] as String? ?? '') ?? DateTime.now(),
     );
   }
@@ -63,6 +69,7 @@ class Product {
     double? precio,
     String? moneda,
     String? categoria,
+    int? stock,
     DateTime? createdAt,
   }) {
     return Product(
@@ -71,6 +78,7 @@ class Product {
       precio: precio ?? this.precio,
       moneda: moneda ?? this.moneda,
       categoria: categoria ?? this.categoria,
+      stock: stock ?? this.stock,
       createdAt: createdAt ?? this.createdAt,
     );
   }

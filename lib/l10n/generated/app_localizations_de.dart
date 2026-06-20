@@ -513,6 +513,13 @@ class AppLocalizationsDe extends AppLocalizations {
   String get drawer_export_sales_subtitle => 'Verkäufe als JSON exportieren';
 
   @override
+  String get drawer_export_catalog => 'EXPORTAR CATÁLOGO';
+
+  @override
+  String get drawer_export_catalog_subtitle =>
+      'Compartir productos con dependientes';
+
+  @override
   String get drawer_import_catalog => 'KATALOG IMPORTIEREN';
 
   @override
@@ -596,6 +603,21 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get catalog_valid_price_required =>
       'Ingrese un precio válido positivo';
+
+  @override
+  String get catalog_stock_label => 'Stock';
+
+  @override
+  String get catalog_stock_hint => 'Dejar vacío para ilimitado';
+
+  @override
+  String get catalog_stock_add => 'Agregar stock';
+
+  @override
+  String get catalog_stock_remove => 'Quitar stock';
+
+  @override
+  String get catalog_out_of_stock => 'AGOTADO';
 
   @override
   String get receipt_title => 'Quittung';

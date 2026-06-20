@@ -42,6 +42,11 @@ class DatabaseHelper {
         )
       ''');
     }
+    if (oldVersion < 3) {
+      await db.execute('''
+        ALTER TABLE products ADD COLUMN stock INTEGER
+      ''');
+    }
   }
 
   Future<void> _createDB(Database db, int version) async {
@@ -106,6 +111,7 @@ class DatabaseHelper {
         precio REAL NOT NULL,
         moneda TEXT NOT NULL DEFAULT 'USD',
         categoria TEXT,
+        stock INTEGER,
         created_at TEXT NOT NULL
       )
     ''');

@@ -1100,6 +1100,18 @@ abstract class AppLocalizations {
   /// **'Exportar ventas a JSON'**
   String get drawer_export_sales_subtitle;
 
+  /// No description provided for @drawer_export_catalog.
+  ///
+  /// In es, this message translates to:
+  /// **'EXPORTAR CATÁLOGO'**
+  String get drawer_export_catalog;
+
+  /// No description provided for @drawer_export_catalog_subtitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Compartir productos con dependientes'**
+  String get drawer_export_catalog_subtitle;
+
   /// No description provided for @drawer_import_catalog.
   ///
   /// In es, this message translates to:
@@ -1255,6 +1267,36 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Ingrese un precio válido positivo'**
   String get catalog_valid_price_required;
+
+  /// No description provided for @catalog_stock_label.
+  ///
+  /// In es, this message translates to:
+  /// **'Stock'**
+  String get catalog_stock_label;
+
+  /// No description provided for @catalog_stock_hint.
+  ///
+  /// In es, this message translates to:
+  /// **'Dejar vacío para ilimitado'**
+  String get catalog_stock_hint;
+
+  /// No description provided for @catalog_stock_add.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregar stock'**
+  String get catalog_stock_add;
+
+  /// No description provided for @catalog_stock_remove.
+  ///
+  /// In es, this message translates to:
+  /// **'Quitar stock'**
+  String get catalog_stock_remove;
+
+  /// No description provided for @catalog_out_of_stock.
+  ///
+  /// In es, this message translates to:
+  /// **'AGOTADO'**
+  String get catalog_out_of_stock;
 
   /// No description provided for @receipt_title.
   ///

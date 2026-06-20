@@ -229,6 +229,18 @@ class _SaleScreenState extends State<SaleScreen> {
   void _agregarProductoFromCatalog(Product product) async {
     final cart = context.read<CartProvider>();
     final l10n = AppLocalizations.of(context)!;
+    final stock = product.stock;
+    if (stock != null && stock <= 0) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.catalog_out_of_stock),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+      return;
+    }
     if (!_canAddCurrency(product.moneda)) {
       _showCurrencyMismatchDialog();
       return;
@@ -514,6 +526,11 @@ class _SaleScreenState extends State<SaleScreen> {
 
           if (settled) {
             await salesProvider.markSaleAsCompleted(saleId);
+
+            final productProvider = context.read<ProductProvider>();
+            for (final item in cart.items) {
+              await productProvider.decrementStockByName(item.nombre, item.cantidad);
+            }
 
             final sale = await salesProvider.getSaleById(saleId);
 
@@ -816,6 +833,13 @@ class _SaleScreenState extends State<SaleScreen> {
             .where((p) =>
                 p.nombre.toLowerCase().contains(_searchQuery.toLowerCase()))
             .toList();
+    filtered.sort((a, b) {
+      final aOut = a.stock != null && a.stock == 0;
+      final bOut = b.stock != null && b.stock == 0;
+      if (aOut && !bOut) return 1;
+      if (!aOut && bOut) return -1;
+      return 0;
+    });
 
     return Column(
       children: [
@@ -885,9 +909,16 @@ class _SaleScreenState extends State<SaleScreen> {
                   itemBuilder: (context, index) {
                     final p = filtered[index];
                     final symbol = _monedaSymbol(p.moneda);
+                    final s = p.stock;
+                    final isOutOfStock = s != null && s == 0;
                     return Card(
+                      color: isOutOfStock
+                          ? AppTheme.cardColor.withValues(alpha: 0.4)
+                          : AppTheme.cardColor,
                       child: InkWell(
-                        onTap: () => _agregarProductoFromCatalog(p),
+                        onTap: isOutOfStock
+                            ? null
+                            : () => _agregarProductoFromCatalog(p),
                         borderRadius: BorderRadius.circular(16),
                         child: Padding(
                           padding: const EdgeInsets.all(12),
@@ -895,14 +926,29 @@ class _SaleScreenState extends State<SaleScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text(
-                                p.nombre,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 14,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      p.nombre,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 14,
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  if (isOutOfStock)
+                                    Text(
+                                      l10n.catalog_out_of_stock,
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                        color: Colors.red[300],
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                ],
                               ),
                               const SizedBox(height: 4),
                               Text(
