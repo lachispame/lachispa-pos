@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - feature/inventario
+      - fix/**
   workflow_dispatch:
 
 jobs:
