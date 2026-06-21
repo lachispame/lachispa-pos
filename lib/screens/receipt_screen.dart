@@ -65,6 +65,8 @@ class ReceiptScreen extends StatelessWidget {
             const SizedBox(height: 8),
             _infoRow(l10n.receipt_employee, sale.userNombre),
             _infoRow(l10n.receipt_date, dateStr),
+            if (sale.tableId != null)
+              _infoRow(l10n.table_label, sale.tableId!),
             const SizedBox(height: 8),
             const Divider(thickness: 1),
             const SizedBox(height: 8),
