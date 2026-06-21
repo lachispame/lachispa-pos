@@ -10,17 +10,27 @@ class TableProvider extends ChangeNotifier {
 
   Map<String, List<CartItem>> get tables => _tables;
   String? get currentTable => _currentTable;
-  List<String> get activeTables => _tables.keys.toList()..sort();
+  List<String> get activeTables {
+    final keys = _tables.keys.toList();
+    keys.sort((a, b) {
+      final aNum = int.tryParse(a);
+      final bNum = int.tryParse(b);
+      if (aNum != null && bNum != null) return aNum.compareTo(bNum);
+      return a.compareTo(b);
+    });
+    return keys;
+  }
   bool get hasActiveTable => _currentTable != null;
 
   List<CartItem> itemsForTable(String table) => _tables[table] ?? [];
 
   Future<void> loadSavedTables() async {
     final prefs = await SharedPreferences.getInstance();
-    final json = prefs.getString(_storageKey);
+    String? json = prefs.getString(_storageKey);
     if (json == null) {
       await _migrateFromV1(prefs);
-      return;
+      json = prefs.getString(_storageKey);
+      if (json == null) return;
     }
     try {
       final decoded = jsonDecode(json) as Map<String, dynamic>;

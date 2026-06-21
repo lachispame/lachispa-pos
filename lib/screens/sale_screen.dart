@@ -797,7 +797,7 @@ class _SaleScreenState extends State<SaleScreen> {
       backgroundColor: AppTheme.backgroundColor,
       appBar: AppBar(
         title: Text(tableProvider.hasActiveTable
-            ? tableProvider.currentTable!
+            ? '${l10n.table_label} ${tableProvider.currentTable}'
             : l10n.sale_title),
         actions: [
           IconButton(

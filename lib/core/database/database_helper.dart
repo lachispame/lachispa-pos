@@ -78,7 +78,8 @@ class DatabaseHelper {
         rate_usado REAL NOT NULL,
         invoice_id TEXT,
         estado TEXT NOT NULL DEFAULT 'completada',
-        exported_at TEXT
+        exported_at TEXT,
+        table_id TEXT
       )
     ''');
 

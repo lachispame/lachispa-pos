@@ -96,10 +96,14 @@ class POSApp extends StatelessWidget {
           },
           '/table-orders': (context) {
             final args = ModalRoute.of(context)?.settings.arguments;
+            assert(args is String, 'route /table-orders requires String argument');
             if (args is String) {
               return TableOrdersScreen(tableId: args);
             }
-            return const SaleScreen();
+            return Scaffold(
+              appBar: AppBar(title: const Text('Error')),
+              body: const Center(child: Text('Invalid route arguments')),
+            );
           },
             },
           );

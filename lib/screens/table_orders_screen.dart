@@ -30,15 +30,22 @@ class _TableOrdersScreenState extends State<TableOrdersScreen> {
   Future<void> _cargar() async {
     final auth = context.read<AuthProvider>();
     final salesProvider = context.read<SalesProvider>();
-    final ventas = await salesProvider.getSalesByTable(
-      widget.tableId,
-      auth.isJefe ? null : auth.currentUser!.id,
-    );
-    if (mounted) {
-      setState(() {
-        _sales = ventas;
-        _loading = false;
-      });
+    try {
+      final ventas = await salesProvider.getSalesByTable(
+        widget.tableId,
+        auth.isJefe ? null : auth.currentUser!.id,
+      );
+      if (mounted) {
+        setState(() {
+          _sales = ventas;
+          _loading = false;
+        });
+      }
+    } catch (e) {
+      debugPrint('TableOrdersScreen._cargar error: $e');
+      if (mounted) {
+        setState(() => _loading = false);
+      }
     }
   }
 
@@ -47,11 +54,9 @@ class _TableOrdersScreenState extends State<TableOrdersScreen> {
     final l10n = AppLocalizations.of(context)!;
     final tableProvider = context.watch<TableProvider>();
     final pendingItems = tableProvider.itemsForTable(widget.tableId);
-    final totalSats = _sales.fold<int>(0, (s, sale) => s + sale.totalSats) +
+    final paidSales = _sales.where((s) => s.estado == 'completada').toList();
+    final totalSats = paidSales.fold<int>(0, (s, sale) => s + sale.totalSats) +
         pendingItems.fold<int>(0, (s, i) => s + i.subtotalSats);
-    final totalFiat = _sales.fold<double>(0.0, (s, sale) => s + sale.totalFiat) +
-        pendingItems.fold<double>(0.0, (s, i) => s + i.subtotalFiat);
-    final moneda = _sales.isNotEmpty ? _sales.first.moneda : (pendingItems.isNotEmpty ? pendingItems.first.moneda : 'USD');
 
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
@@ -72,15 +77,11 @@ class _TableOrdersScreenState extends State<TableOrdersScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           Text(
-                            '${_sales.length} ${l10n.sales}',
+                            _sales.length.toString(),
                             style: const TextStyle(fontSize: 16),
                           ),
                           Text(
                             '${totalSats} sats',
-                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            '${Moneda.fromCodigo(moneda).simbolo}${totalFiat.toStringAsFixed(2)}',
                             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                           ),
                         ],
@@ -111,12 +112,12 @@ class _TableOrdersScreenState extends State<TableOrdersScreen> {
                     ),
                   ),
                 ],
-                if (_sales.isNotEmpty) ...[
+                if (paidSales.isNotEmpty) ...[
                   Padding(
                     padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
                     child: Text(l10n.paid_orders, style: const TextStyle(fontSize: 13, color: Colors.grey)),
                   ),
-                  ..._sales.map((sale) {
+                  ...paidSales.map((sale) {
                     final dateStr = DateFormat('dd/MM HH:mm').format(sale.fecha);
                     return Card(
                       color: AppTheme.cardColor,
