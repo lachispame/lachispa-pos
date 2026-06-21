@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - feature/inventario
+      - feature/mesas-gestion
       - fix/**
   workflow_dispatch:
 

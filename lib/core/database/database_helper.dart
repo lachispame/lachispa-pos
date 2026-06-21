@@ -47,6 +47,14 @@ class DatabaseHelper {
         ALTER TABLE products ADD COLUMN stock INTEGER
       ''');
     }
+    if (oldVersion < 4) {
+      await db.execute('''
+        ALTER TABLE sales ADD COLUMN table_id TEXT
+      ''');
+      await db.execute('''
+        CREATE INDEX IF NOT EXISTS idx_sales_table_id ON sales(table_id)
+      ''');
+    }
   }
 
   Future<void> _createDB(Database db, int version) async {
@@ -73,8 +81,12 @@ class DatabaseHelper {
         rate_usado REAL NOT NULL,
         invoice_id TEXT,
         estado TEXT NOT NULL DEFAULT 'completada',
-        exported_at TEXT
+        exported_at TEXT,
+        table_id TEXT
       )
+    ''');
+    await db.execute('''
+      CREATE INDEX IF NOT EXISTS idx_sales_table_id ON sales(table_id)
     ''');
 
     await db.execute('''

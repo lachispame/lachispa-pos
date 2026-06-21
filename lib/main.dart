@@ -21,6 +21,7 @@ import 'models/sale.dart';
 import 'screens/product_catalog_screen.dart';
 import 'screens/stats_screen.dart';
 import 'screens/receipt_screen.dart';
+import 'screens/table_orders_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -92,6 +93,17 @@ class POSApp extends StatelessWidget {
               return ReceiptScreen(sale: args);
             }
             return const SaleScreen();
+          },
+          '/table-orders': (context) {
+            final args = ModalRoute.of(context)?.settings.arguments;
+            assert(args is String, 'route /table-orders requires String argument');
+            if (args is String) {
+              return TableOrdersScreen(tableId: args);
+            }
+            return Scaffold(
+              appBar: AppBar(title: const Text('Error')),
+              body: const Center(child: Text('Invalid route arguments')),
+            );
           },
             },
           );

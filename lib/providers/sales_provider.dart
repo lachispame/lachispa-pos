@@ -17,6 +17,7 @@ class SalesProvider extends ChangeNotifier {
     required int totalSats,
     required double rateUsado,
     required String invoiceId,
+    String? tableId,
   }) async {
     final saleId = _uuid.v4();
     final now = DateTime.now();
@@ -33,6 +34,7 @@ class SalesProvider extends ChangeNotifier {
       'total_sats': totalSats,
       'rate_usado': rateUsado,
       'invoice_id': invoiceId,
+      'table_id': tableId,
       'estado': 'pendiente',
     });
 
@@ -61,6 +63,7 @@ class SalesProvider extends ChangeNotifier {
     required int totalSats,
     required double rateUsado,
     String? invoiceId,
+    String? tableId,
   }) async {
     final saleId = _uuid.v4();
     final now = DateTime.now();
@@ -77,6 +80,7 @@ class SalesProvider extends ChangeNotifier {
       'total_sats': totalSats,
       'rate_usado': rateUsado,
       'invoice_id': invoiceId,
+      'table_id': tableId,
       'estado': 'completada',
     });
 
@@ -387,6 +391,24 @@ class SalesProvider extends ChangeNotifier {
       'sales',
       where: 'user_id = ? AND estado = ?',
       whereArgs: [userId, 'pendiente'],
+      orderBy: 'fecha DESC',
+    );
+
+    final sales = <Sale>[];
+    for (final saleMap in result) {
+      final items = await _getSaleItems(saleMap['id'] as String);
+      sales.add(Sale.fromMap(saleMap, items));
+    }
+
+    return sales;
+  }
+
+  Future<List<Sale>> getSalesByTable(String tableId, String? userId) async {
+    final db = await DatabaseHelper.instance.database;
+    final result = await db.query(
+      'sales',
+      where: userId != null ? 'table_id = ? AND user_id = ?' : 'table_id = ?',
+      whereArgs: userId != null ? [tableId, userId] : [tableId],
       orderBy: 'fecha DESC',
     );
 

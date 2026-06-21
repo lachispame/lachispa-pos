@@ -22,6 +22,7 @@ import '../providers/table_provider.dart';
 import '../models/sale.dart';
 import '../models/sale_item.dart';
 import '../l10n/generated/app_localizations.dart';
+import 'table_management_screen.dart';
 
 class SaleScreen extends StatefulWidget {
   const SaleScreen({super.key});
@@ -227,9 +228,9 @@ class _SaleScreenState extends State<SaleScreen> {
 
   void _agregarProductoFromCatalog(Product product) async {
     final cart = context.read<CartProvider>();
+    final tableProvider = context.read<TableProvider>();
     final l10n = AppLocalizations.of(context)!;
-    final stock = product.stock;
-    if (stock != null && stock <= 0) {
+    if (_isOutOfStock(product, tableProvider, cart)) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -382,6 +383,7 @@ class _SaleScreenState extends State<SaleScreen> {
         totalSats: cart.totalSats,
         rateUsado: cart.rateUsado,
         invoiceId: invoice.paymentHash,
+        tableId: context.read<TableProvider>().currentTable,
       );
 
       _paymentRequest = invoice.paymentRequest;
@@ -477,6 +479,7 @@ class _SaleScreenState extends State<SaleScreen> {
 
           final salesProvider = context.read<SalesProvider>();
           await salesProvider.deletePendingSales(user.id);
+          final tableProvider = context.read<TableProvider>();
           final saleId = await salesProvider.saveSale(
             userId: user.id,
             userNombre: user.nombre,
@@ -486,6 +489,7 @@ class _SaleScreenState extends State<SaleScreen> {
             totalSats: cart.totalSats,
             rateUsado: cart.rateUsado,
             invoiceId: invoiceResult.paymentHash,
+            tableId: tableProvider.currentTable,
           );
 
           unawaited(_confirmarPagoNfc(invoiceResult.paymentHash));
@@ -494,7 +498,6 @@ class _SaleScreenState extends State<SaleScreen> {
             await context.read<ProductProvider>().decrementStockByName(item.nombre, item.cantidad);
           }
 
-          final tableProvider = context.read<TableProvider>();
           if (tableProvider.hasActiveTable) {
             await tableProvider.closeTable(tableProvider.currentTable!);
           }
@@ -614,84 +617,18 @@ class _SaleScreenState extends State<SaleScreen> {
     print('[NFC] payment polling agotado sin confirmacion: $paymentHash');
   }
 
-  void _showTableDialog() {
-    final tableProvider = context.read<TableProvider>();
-    final l10n = AppLocalizations.of(context)!;
-
-    showDialog(
-      context: context,
-      builder: (ctx) {
-        final tables = tableProvider.activeTables;
-        int selectedTable = tableProvider.currentTable ?? (tables.isNotEmpty ? tables.first : 1);
-        final controller = TextEditingController(text: selectedTable.toString());
-
-        return StatefulBuilder(
-          builder: (ctx, setDialogState) => AlertDialog(
-            backgroundColor: AppTheme.cardColor,
-            title: Text(l10n.tables_title),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: controller,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    labelText: l10n.table_label,
-                    prefixIcon: const Icon(Icons.table_restaurant),
-                  ),
-                  onChanged: (v) {
-                    final n = int.tryParse(v);
-                    if (n != null) setDialogState(() => selectedTable = n);
-                  },
-                ),
-                if (tables.isNotEmpty) ...[
-                  const SizedBox(height: 16),
-                  Text(l10n.tables_active_title, style: const TextStyle(fontSize: 13, color: Colors.grey)),
-                  const SizedBox(height: 8),
-                  Wrap(
-                    spacing: 8,
-                    children: tables.map((t) {
-                      final itemCount = tableProvider.itemsForTable(t).length;
-                      return ActionChip(
-                        label: Text('${l10n.table_label} $t ($itemCount)'),
-                        onPressed: () {
-                          Navigator.pop(ctx);
-                          _selectTable(t);
-                        },
-                      );
-                    }).toList(),
-                  ),
-                ],
-              ],
-            ),
-            actions: [
-              if (tableProvider.hasActiveTable)
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(ctx);
-                    _closeTable(tableProvider.currentTable!);
-                  },
-                  child: Text(l10n.discard_table, style: const TextStyle(color: Colors.red)),
-                ),
-              TextButton(
-                onPressed: () => Navigator.pop(ctx),
-                child: Text(l10n.cancel_button),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(ctx);
-                  _selectTable(selectedTable);
-                },
-                child: Text(l10n.confirm_table),
-              ),
-            ],
-          ),
-        );
-      },
+  Future<void> _openTableManagementScreen() async {
+    final result = await Navigator.push<String>(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const TableManagementScreen(),
+      ),
     );
+    if (!mounted || result == null) return;
+    _selectTable(result);
   }
 
-  Future<void> _selectTable(int table) async {
+  Future<void> _selectTable(String table) async {
     final tableProvider = context.read<TableProvider>();
     final cart = context.read<CartProvider>();
 
@@ -735,7 +672,7 @@ class _SaleScreenState extends State<SaleScreen> {
     }
   }
 
-  void _closeTable(int table) async {
+  void _closeTable(String table) async {
     final tableProvider = context.read<TableProvider>();
     final cart = context.read<CartProvider>();
     final l10n = AppLocalizations.of(context)!;
@@ -750,6 +687,32 @@ class _SaleScreenState extends State<SaleScreen> {
         SnackBar(content: Text('${l10n.table_label} $table')),
       );
     }
+  }
+
+  Future<void> _dejarMesaAbierta() async {
+    final tableProvider = context.read<TableProvider>();
+    final cart = context.read<CartProvider>();
+    final table = tableProvider.currentTable;
+    if (table == null) return;
+
+    await tableProvider.saveCartToTable(table, List.from(cart.items));
+    await cart.clearCart();
+    tableProvider.clearSelection();
+    if (mounted) {
+      final l10n = AppLocalizations.of(context)!;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('${l10n.table_label} $table - ${l10n.saved}')),
+      );
+    }
+  }
+
+  bool _isOutOfStock(Product product, TableProvider tableProvider, CartProvider cart) {
+    if (product.stock == null) return false;
+    final pending = tableProvider.pendingQuantity(product.nombre);
+    final inCart = cart.items
+        .where((i) => i.nombre == product.nombre)
+        .fold<int>(0, (s, i) => s + i.cantidad);
+    return (product.stock! - pending - inCart) <= 0;
   }
 
   @override
@@ -839,7 +802,7 @@ class _SaleScreenState extends State<SaleScreen> {
           IconButton(
             icon: const Icon(Icons.table_restaurant),
             tooltip: l10n.table_label,
-            onPressed: _showTableDialog,
+            onPressed: _openTableManagementScreen,
           ),
           IconButton(
             icon: Icon(_isCatalogMode ? Icons.edit : Icons.store),
@@ -862,6 +825,7 @@ class _SaleScreenState extends State<SaleScreen> {
 
   Widget _buildCatalogMode(CartProvider cart, AppLocalizations l10n) {
     final productProvider = context.watch<ProductProvider>();
+    final tableProvider = context.watch<TableProvider>();
     final currencyCode = cart.monedaVenta.codigo;
 
     final productsInCurrency = productProvider.products
@@ -874,8 +838,8 @@ class _SaleScreenState extends State<SaleScreen> {
                 p.nombre.toLowerCase().contains(_searchQuery.toLowerCase()))
             .toList();
     filtered.sort((a, b) {
-      final aOut = a.stock != null && a.stock == 0;
-      final bOut = b.stock != null && b.stock == 0;
+      final aOut = _isOutOfStock(a, tableProvider, cart);
+      final bOut = _isOutOfStock(b, tableProvider, cart);
       if (aOut && !bOut) return 1;
       if (!aOut && bOut) return -1;
       return 0;
@@ -949,8 +913,7 @@ class _SaleScreenState extends State<SaleScreen> {
                   itemBuilder: (context, index) {
                     final p = filtered[index];
                     final symbol = _monedaSymbol(p.moneda);
-                    final s = p.stock;
-                    final isOutOfStock = s != null && s == 0;
+                    final isOutOfStock = _isOutOfStock(p, tableProvider, cart);
                     return Card(
                       color: isOutOfStock
                           ? AppTheme.cardColor.withValues(alpha: 0.4)
@@ -1103,6 +1066,7 @@ class _SaleScreenState extends State<SaleScreen> {
   }
 
   Widget _buildBottomBar(CartProvider cart, AppLocalizations l10n) {
+    final tableProvider = context.watch<TableProvider>();
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -1114,13 +1078,29 @@ class _SaleScreenState extends State<SaleScreen> {
         ),
         Padding(
           padding: const EdgeInsets.all(16),
-          child: SizedBox(
-            width: double.infinity,
-            child: ElevatedButton.icon(
-              onPressed: _crearInvoice,
-              icon: const Icon(Icons.payment),
-              label: Text(l10n.cobrar),
-            ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: _crearInvoice,
+                  icon: const Icon(Icons.payment),
+                  label: Text(l10n.cobrar),
+                ),
+              ),
+              if (tableProvider.hasActiveTable) ...[
+                const SizedBox(height: 8),
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    onPressed: _dejarMesaAbierta,
+                    icon: const Icon(Icons.save),
+                    label: Text(l10n.keep_table_open),
+                  ),
+                ),
+              ],
+            ],
           ),
         ),
       ],

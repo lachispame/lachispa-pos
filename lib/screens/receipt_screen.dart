@@ -65,6 +65,8 @@ class ReceiptScreen extends StatelessWidget {
             const SizedBox(height: 8),
             _infoRow(l10n.receipt_employee, sale.userNombre),
             _infoRow(l10n.receipt_date, dateStr),
+            if (sale.tableId != null)
+              _infoRow(l10n.table_label, sale.tableId!),
             const SizedBox(height: 8),
             const Divider(thickness: 1),
             const SizedBox(height: 8),
@@ -194,11 +196,14 @@ class ReceiptScreen extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(label, style: const TextStyle(fontSize: 12, color: Colors.grey)),
-          Text(value,
-              style: const TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 12,
-              )),
+          Flexible(
+            child: Text(
+              value,
+              style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12),
+              textAlign: TextAlign.end,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
         ],
       ),
     );
