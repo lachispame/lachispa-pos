@@ -421,6 +421,33 @@ class SalesProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> deletePendingSales(String userId) async {
+    final db = await DatabaseHelper.instance.database;
+
+    final sales = await db.query(
+      'sales',
+      columns: ['id'],
+      where: 'user_id = ? AND estado = ?',
+      whereArgs: [userId, 'pendiente'],
+    );
+
+    for (final sale in sales) {
+      await db.delete(
+        'sale_items',
+        where: 'sale_id = ?',
+        whereArgs: [sale['id']],
+      );
+    }
+
+    await db.delete(
+      'sales',
+      where: 'user_id = ? AND estado = ?',
+      whereArgs: [userId, 'pendiente'],
+    );
+
+    notifyListeners();
+  }
+
   Future<void> deleteAllImportedSales() async {
     final db = await DatabaseHelper.instance.database;
 

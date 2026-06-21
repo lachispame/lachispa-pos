@@ -476,6 +476,7 @@ class _SaleScreenState extends State<SaleScreen> {
           await _nfcService.stopReading();
 
           final salesProvider = context.read<SalesProvider>();
+          await salesProvider.deletePendingSales(user.id);
           final saleId = await salesProvider.createPendingSale(
             userId: user.id,
             userNombre: user.nombre,
