@@ -39,7 +39,6 @@ class _SaleScreenState extends State<SaleScreen> {
   bool _isCatalogMode = false;
   String _searchQuery = '';
   String? _paymentRequest;
-  String? _pendingSaleId;
 
   final NfcPaymentService _nfcService = NfcPaymentService();
 
@@ -385,7 +384,6 @@ class _SaleScreenState extends State<SaleScreen> {
         invoiceId: invoice.paymentHash,
       );
 
-      _pendingSaleId = pendingSaleId;
       _paymentRequest = invoice.paymentRequest;
 
       LachispaApiService.instance.connectWebSocket(user.lndhubCreds!);
@@ -477,10 +475,8 @@ class _SaleScreenState extends State<SaleScreen> {
 
           await _nfcService.stopReading();
 
-          LachispaApiService.instance.connectWebSocket(user.lndhubCreds!);
-
-          _paymentRequest = invoiceResult.paymentRequest;
-          _pendingSaleId = await context.read<SalesProvider>().createPendingSale(
+          final salesProvider = context.read<SalesProvider>();
+          final saleId = await salesProvider.createPendingSale(
             userId: user.id,
             userNombre: user.nombre,
             items: cart.items,
@@ -491,11 +487,30 @@ class _SaleScreenState extends State<SaleScreen> {
             invoiceId: invoiceResult.paymentHash,
           );
 
-          if (mounted) {
-            setState(() => _showPaymentSheet = true);
+          await salesProvider.markSaleAsCompleted(saleId);
+
+          for (final item in cart.items) {
+            await context.read<ProductProvider>().decrementStockByName(item.nombre, item.cantidad);
           }
 
-          _esperarPago(invoiceResult.paymentHash, _pendingSaleId!);
+          final tableProvider = context.read<TableProvider>();
+          if (tableProvider.hasActiveTable) {
+            await tableProvider.closeTable(tableProvider.currentTable!);
+          }
+
+          await cart.clearCart();
+
+          if (mounted) {
+            setState(() {
+              _isReadingNfc = false;
+              _showPaymentSheet = false;
+            });
+
+            final sale = await salesProvider.getSaleById(saleId);
+            if (sale != null && mounted) {
+              Navigator.pushReplacementNamed(context, '/receipt', arguments: sale);
+            }
+          }
         } catch (e) {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -557,7 +572,6 @@ class _SaleScreenState extends State<SaleScreen> {
               setState(() {
                 _showPaymentSheet = false;
                 _isReadingNfc = false;
-                _pendingSaleId = null;
               });
 
               if (sale != null && mounted) {
