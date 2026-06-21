@@ -1,0 +1,24 @@
+name: Analyze
+
+on:
+  push:
+    branches:
+      - '**'
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - run: flutter pub get
+
+      - run: flutter gen-l10n
+
+      - run: flutter analyze
