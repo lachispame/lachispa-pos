@@ -39,7 +39,6 @@ class _SaleScreenState extends State<SaleScreen> {
   bool _isCatalogMode = false;
   String _searchQuery = '';
   String? _paymentRequest;
-  String? _pendingSaleId;
 
   final NfcPaymentService _nfcService = NfcPaymentService();
 
@@ -385,7 +384,6 @@ class _SaleScreenState extends State<SaleScreen> {
         invoiceId: invoice.paymentHash,
       );
 
-      _pendingSaleId = pendingSaleId;
       _paymentRequest = invoice.paymentRequest;
 
       LachispaApiService.instance.connectWebSocket(user.lndhubCreds!);
@@ -433,7 +431,22 @@ class _SaleScreenState extends State<SaleScreen> {
 
     final cart = context.read<CartProvider>();
     final auth = context.read<AuthProvider>();
-    final user = auth.currentUser!;
+    final user = auth.currentUser;
+
+    if (user?.lndhubUrl == null || user?.lndhubCreds == null) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.configure_api_in_settings)),
+        );
+        setState(() => _isReadingNfc = false);
+      }
+      return;
+    }
+
+    LachispaApiService.instance.configure(
+      baseUrl: user!.lndhubUrl!,
+      apiKey: user.lndhubCreds!,
+    );
 
     await _nfcService.readLnurlFromCard(
       onLnurlReceived: (lnurl) async {
@@ -462,17 +475,9 @@ class _SaleScreenState extends State<SaleScreen> {
 
           await _nfcService.stopReading();
 
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(l10n.waiting_for_payment),
-                backgroundColor: Colors.green,
-              ),
-            );
-          }
-
           final salesProvider = context.read<SalesProvider>();
-          final pendingSaleId = await salesProvider.createPendingSale(
+          await salesProvider.deletePendingSales(user.id);
+          final saleId = await salesProvider.saveSale(
             userId: user.id,
             userNombre: user.nombre,
             items: cart.items,
@@ -482,9 +487,31 @@ class _SaleScreenState extends State<SaleScreen> {
             rateUsado: cart.rateUsado,
             invoiceId: invoiceResult.paymentHash,
           );
-          _pendingSaleId = pendingSaleId;
 
-          _esperarPago(invoiceResult.paymentHash, _pendingSaleId!);
+          unawaited(_confirmarPagoNfc(invoiceResult.paymentHash));
+
+          for (final item in cart.items) {
+            await context.read<ProductProvider>().decrementStockByName(item.nombre, item.cantidad);
+          }
+
+          final tableProvider = context.read<TableProvider>();
+          if (tableProvider.hasActiveTable) {
+            await tableProvider.closeTable(tableProvider.currentTable!);
+          }
+
+          await cart.clearCart();
+
+          if (mounted) {
+            setState(() {
+              _isReadingNfc = false;
+              _showPaymentSheet = false;
+            });
+
+            final sale = await salesProvider.getSaleById(saleId);
+            if (sale != null && mounted) {
+              Navigator.pushReplacementNamed(context, '/receipt', arguments: sale);
+            }
+          }
         } catch (e) {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -546,7 +573,6 @@ class _SaleScreenState extends State<SaleScreen> {
               setState(() {
                 _showPaymentSheet = false;
                 _isReadingNfc = false;
-                _pendingSaleId = null;
               });
 
               if (sale != null && mounted) {
@@ -572,6 +598,20 @@ class _SaleScreenState extends State<SaleScreen> {
         );
       }
     }
+  }
+
+  Future<void> _confirmarPagoNfc(String paymentHash) async {
+    for (int i = 0; i < 20; i++) {
+      if (!mounted) return;
+      try {
+        final paid = await LachispaApiService.instance.checkPayment(paymentHash);
+        if (paid) return;
+      } catch (e) {
+        print('[NFC] polling error: $e');
+      }
+      await Future.delayed(const Duration(seconds: 3));
+    }
+    print('[NFC] payment polling agotado sin confirmacion: $paymentHash');
   }
 
   void _showTableDialog() {

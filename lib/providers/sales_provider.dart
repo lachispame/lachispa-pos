@@ -52,7 +52,7 @@ class SalesProvider extends ChangeNotifier {
     return saleId;
   }
 
-  Future<void> saveSale({
+  Future<String> saveSale({
     required String userId,
     required String userNombre,
     required List<CartItem> items,
@@ -93,6 +93,7 @@ class SalesProvider extends ChangeNotifier {
     }
 
     notifyListeners();
+    return saleId;
   }
 
   Future<List<Sale>> getSalesByUser(String userId) async {
@@ -417,6 +418,33 @@ class SalesProvider extends ChangeNotifier {
     }
 
     await db.delete('sales', where: 'user_id = ?', whereArgs: [userId]);
+
+    notifyListeners();
+  }
+
+  Future<void> deletePendingSales(String userId) async {
+    final db = await DatabaseHelper.instance.database;
+
+    final sales = await db.query(
+      'sales',
+      columns: ['id'],
+      where: 'user_id = ? AND estado = ?',
+      whereArgs: [userId, 'pendiente'],
+    );
+
+    for (final sale in sales) {
+      await db.delete(
+        'sale_items',
+        where: 'sale_id = ?',
+        whereArgs: [sale['id']],
+      );
+    }
+
+    await db.delete(
+      'sales',
+      where: 'user_id = ? AND estado = ?',
+      whereArgs: [userId, 'pendiente'],
+    );
 
     notifyListeners();
   }
