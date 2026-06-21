@@ -477,7 +477,7 @@ class _SaleScreenState extends State<SaleScreen> {
 
           final salesProvider = context.read<SalesProvider>();
           await salesProvider.deletePendingSales(user.id);
-          final saleId = await salesProvider.createPendingSale(
+          final saleId = await salesProvider.saveSale(
             userId: user.id,
             userNombre: user.nombre,
             items: cart.items,
@@ -488,7 +488,7 @@ class _SaleScreenState extends State<SaleScreen> {
             invoiceId: invoiceResult.paymentHash,
           );
 
-          await salesProvider.markSaleAsCompleted(saleId);
+          unawaited(_confirmarPagoNfc(invoiceResult.paymentHash));
 
           for (final item in cart.items) {
             await context.read<ProductProvider>().decrementStockByName(item.nombre, item.cantidad);
@@ -597,6 +597,15 @@ class _SaleScreenState extends State<SaleScreen> {
           ),
         );
       }
+    }
+  }
+
+  Future<void> _confirmarPagoNfc(String paymentHash) async {
+    for (int i = 0; i < 20; i++) {
+      if (!mounted) return;
+      final paid = await LachispaApiService.instance.checkPayment(paymentHash);
+      if (paid) return;
+      await Future.delayed(const Duration(seconds: 3));
     }
   }
 

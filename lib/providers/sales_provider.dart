@@ -52,7 +52,7 @@ class SalesProvider extends ChangeNotifier {
     return saleId;
   }
 
-  Future<void> saveSale({
+  Future<String> saveSale({
     required String userId,
     required String userNombre,
     required List<CartItem> items,
@@ -93,6 +93,7 @@ class SalesProvider extends ChangeNotifier {
     }
 
     notifyListeners();
+    return saleId;
   }
 
   Future<List<Sale>> getSalesByUser(String userId) async {
