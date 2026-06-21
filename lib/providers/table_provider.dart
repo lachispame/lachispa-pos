@@ -99,4 +99,16 @@ class TableProvider extends ChangeNotifier {
     _currentTable = null;
     notifyListeners();
   }
+
+  int pendingQuantity(String productName) {
+    int total = 0;
+    for (final items in _tables.values) {
+      for (final item in items) {
+        if (item.nombre == productName) {
+          total += item.cantidad;
+        }
+      }
+    }
+    return total;
+  }
 }

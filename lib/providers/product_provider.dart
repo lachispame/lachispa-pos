@@ -109,6 +109,27 @@ class ProductProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> incrementStockByName(String nombre, int cantidad) async {
+    final index = _products.indexWhere(
+      (p) => p.nombre == nombre && p.stock != null,
+    );
+    if (index == -1) return;
+
+    final product = _products[index];
+    final updated = product.copyWith(stock: product.stock! + cantidad);
+
+    final db = await DatabaseHelper.instance.database;
+    await db.update(
+      'products',
+      {'stock': updated.stock},
+      where: 'id = ?',
+      whereArgs: [product.id],
+    );
+
+    _products[index] = updated;
+    notifyListeners();
+  }
+
   Future<void> exportCatalog() async {
     final json = const JsonEncoder.withIndent('  ').convert(
       _products.map((p) => {

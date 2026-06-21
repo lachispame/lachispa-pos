@@ -22,6 +22,7 @@ import '../providers/table_provider.dart';
 import '../models/sale.dart';
 import '../models/sale_item.dart';
 import '../l10n/generated/app_localizations.dart';
+import 'table_management_screen.dart';
 
 class SaleScreen extends StatefulWidget {
   const SaleScreen({super.key});
@@ -227,9 +228,9 @@ class _SaleScreenState extends State<SaleScreen> {
 
   void _agregarProductoFromCatalog(Product product) async {
     final cart = context.read<CartProvider>();
+    final tableProvider = context.read<TableProvider>();
     final l10n = AppLocalizations.of(context)!;
-    final stock = product.stock;
-    if (stock != null && stock <= 0) {
+    if (_isOutOfStock(product, tableProvider)) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -616,93 +617,19 @@ class _SaleScreenState extends State<SaleScreen> {
     print('[NFC] payment polling agotado sin confirmacion: $paymentHash');
   }
 
-  void _showTableDialog() {
-    final tableProvider = context.read<TableProvider>();
-    final l10n = AppLocalizations.of(context)!;
-
-    showDialog(
-      context: context,
-      builder: (ctx) {
-        final tables = tableProvider.activeTables;
-        String selectedTable = tableProvider.currentTable ?? (tables.isNotEmpty ? tables.first : '1');
-        final controller = TextEditingController(text: selectedTable);
-
-        return StatefulBuilder(
-          builder: (ctx, setDialogState) => AlertDialog(
-            backgroundColor: AppTheme.cardColor,
-            title: Text(l10n.tables_title),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: controller,
-                  decoration: InputDecoration(
-                    labelText: l10n.table_label,
-                    prefixIcon: const Icon(Icons.table_restaurant),
-                  ),
-                  onChanged: (v) {
-                    if (v.isNotEmpty) setDialogState(() => selectedTable = v);
-                  },
-                ),
-                if (tables.isNotEmpty) ...[
-                  const SizedBox(height: 16),
-                  Text(l10n.tables_active_title, style: const TextStyle(fontSize: 13, color: Colors.grey)),
-                  const SizedBox(height: 8),
-                  Wrap(
-                    spacing: 8,
-                    children: tables.map((t) {
-                      final itemCount = tableProvider.itemsForTable(t).length;
-                      return ActionChip(
-                        label: Text('$t ($itemCount)'),
-                        onPressed: () {
-                          Navigator.pop(ctx);
-                          _selectTable(t);
-                        },
-                      );
-                    }).toList(),
-                  ),
-                  const SizedBox(height: 4),
-                  Wrap(
-                    spacing: 8,
-                    children: tables.map((t) {
-                      return TextButton.icon(
-                        icon: const Icon(Icons.receipt_long, size: 18),
-                        label: Text(l10n.view_orders),
-                        onPressed: () {
-                          Navigator.pop(ctx);
-                          Navigator.pushNamed(context, '/table-orders', arguments: t);
-                        },
-                      );
-                    }).toList(),
-                  ),
-                ],
-              ],
-            ),
-            actions: [
-              if (tableProvider.hasActiveTable)
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(ctx);
-                    _closeTable(tableProvider.currentTable!);
-                  },
-                  child: Text(l10n.discard_table, style: const TextStyle(color: Colors.red)),
-                ),
-              TextButton(
-                onPressed: () => Navigator.pop(ctx),
-                child: Text(l10n.cancel_button),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(ctx);
-                  _selectTable(selectedTable);
-                },
-                child: Text(l10n.confirm_table),
-              ),
-            ],
-          ),
-        );
-      },
+  Future<void> _openTableManagementScreen() async {
+    final result = await Navigator.push<String>(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const TableManagementScreen(),
+      ),
     );
+    if (!mounted || result == null) return;
+    if (result == '__clear__') {
+      _closeTable(context.read<TableProvider>().currentTable!);
+    } else {
+      _selectTable(result);
+    }
   }
 
   Future<void> _selectTable(String table) async {
@@ -774,12 +701,19 @@ class _SaleScreenState extends State<SaleScreen> {
 
     await tableProvider.saveCartToTable(table, List.from(cart.items));
     await cart.clearCart();
+    tableProvider.clearSelection();
     if (mounted) {
       final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('${l10n.table_label} $table - ${l10n.saved}')),
       );
     }
+  }
+
+  bool _isOutOfStock(Product product, TableProvider tableProvider) {
+    if (product.stock == null) return false;
+    final pending = tableProvider.pendingQuantity(product.nombre);
+    return (product.stock! - pending) <= 0;
   }
 
   @override
@@ -869,7 +803,7 @@ class _SaleScreenState extends State<SaleScreen> {
           IconButton(
             icon: const Icon(Icons.table_restaurant),
             tooltip: l10n.table_label,
-            onPressed: _showTableDialog,
+            onPressed: _openTableManagementScreen,
           ),
           IconButton(
             icon: Icon(_isCatalogMode ? Icons.edit : Icons.store),
@@ -892,6 +826,7 @@ class _SaleScreenState extends State<SaleScreen> {
 
   Widget _buildCatalogMode(CartProvider cart, AppLocalizations l10n) {
     final productProvider = context.watch<ProductProvider>();
+    final tableProvider = context.watch<TableProvider>();
     final currencyCode = cart.monedaVenta.codigo;
 
     final productsInCurrency = productProvider.products
@@ -904,8 +839,8 @@ class _SaleScreenState extends State<SaleScreen> {
                 p.nombre.toLowerCase().contains(_searchQuery.toLowerCase()))
             .toList();
     filtered.sort((a, b) {
-      final aOut = a.stock != null && a.stock == 0;
-      final bOut = b.stock != null && b.stock == 0;
+      final aOut = _isOutOfStock(a, tableProvider);
+      final bOut = _isOutOfStock(b, tableProvider);
       if (aOut && !bOut) return 1;
       if (!aOut && bOut) return -1;
       return 0;
@@ -979,8 +914,7 @@ class _SaleScreenState extends State<SaleScreen> {
                   itemBuilder: (context, index) {
                     final p = filtered[index];
                     final symbol = _monedaSymbol(p.moneda);
-                    final s = p.stock;
-                    final isOutOfStock = s != null && s == 0;
+                    final isOutOfStock = _isOutOfStock(p, tableProvider);
                     return Card(
                       color: isOutOfStock
                           ? AppTheme.cardColor.withValues(alpha: 0.4)
