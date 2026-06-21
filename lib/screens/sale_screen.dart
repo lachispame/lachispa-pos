@@ -603,10 +603,15 @@ class _SaleScreenState extends State<SaleScreen> {
   Future<void> _confirmarPagoNfc(String paymentHash) async {
     for (int i = 0; i < 20; i++) {
       if (!mounted) return;
-      final paid = await LachispaApiService.instance.checkPayment(paymentHash);
-      if (paid) return;
+      try {
+        final paid = await LachispaApiService.instance.checkPayment(paymentHash);
+        if (paid) return;
+      } catch (e) {
+        print('[NFC] polling error: $e');
+      }
       await Future.delayed(const Duration(seconds: 3));
     }
+    print('[NFC] payment polling agotado sin confirmacion: $paymentHash');
   }
 
   void _showTableDialog() {
