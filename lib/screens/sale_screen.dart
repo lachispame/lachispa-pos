@@ -230,7 +230,7 @@ class _SaleScreenState extends State<SaleScreen> {
     final cart = context.read<CartProvider>();
     final tableProvider = context.read<TableProvider>();
     final l10n = AppLocalizations.of(context)!;
-    if (_isOutOfStock(product, tableProvider)) {
+    if (_isOutOfStock(product, tableProvider, cart)) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -625,11 +625,7 @@ class _SaleScreenState extends State<SaleScreen> {
       ),
     );
     if (!mounted || result == null) return;
-    if (result == '__clear__') {
-      _closeTable(context.read<TableProvider>().currentTable!);
-    } else {
-      _selectTable(result);
-    }
+    _selectTable(result);
   }
 
   Future<void> _selectTable(String table) async {
@@ -710,10 +706,13 @@ class _SaleScreenState extends State<SaleScreen> {
     }
   }
 
-  bool _isOutOfStock(Product product, TableProvider tableProvider) {
+  bool _isOutOfStock(Product product, TableProvider tableProvider, CartProvider cart) {
     if (product.stock == null) return false;
     final pending = tableProvider.pendingQuantity(product.nombre);
-    return (product.stock! - pending) <= 0;
+    final inCart = cart.items
+        .where((i) => i.nombre == product.nombre)
+        .fold<int>(0, (s, i) => s + i.cantidad);
+    return (product.stock! - pending - inCart) <= 0;
   }
 
   @override
@@ -839,8 +838,8 @@ class _SaleScreenState extends State<SaleScreen> {
                 p.nombre.toLowerCase().contains(_searchQuery.toLowerCase()))
             .toList();
     filtered.sort((a, b) {
-      final aOut = _isOutOfStock(a, tableProvider);
-      final bOut = _isOutOfStock(b, tableProvider);
+      final aOut = _isOutOfStock(a, tableProvider, cart);
+      final bOut = _isOutOfStock(b, tableProvider, cart);
       if (aOut && !bOut) return 1;
       if (!aOut && bOut) return -1;
       return 0;
@@ -914,7 +913,7 @@ class _SaleScreenState extends State<SaleScreen> {
                   itemBuilder: (context, index) {
                     final p = filtered[index];
                     final symbol = _monedaSymbol(p.moneda);
-                    final isOutOfStock = _isOutOfStock(p, tableProvider);
+                    final isOutOfStock = _isOutOfStock(p, tableProvider, cart);
                     return Card(
                       color: isOutOfStock
                           ? AppTheme.cardColor.withValues(alpha: 0.4)

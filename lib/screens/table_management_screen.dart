@@ -34,7 +34,10 @@ class _TableManagementScreenState extends State<TableManagementScreen> {
         actions: [
           if (tableProvider.hasActiveTable)
             TextButton.icon(
-              onPressed: () => Navigator.pop(context, '__clear__'),
+              onPressed: () {
+                tableProvider.closeTable(tableProvider.currentTable!);
+                Navigator.pop(context);
+              },
               icon: const Icon(Icons.close, size: 18),
               label: Text(l10n.discard_table),
             ),
@@ -52,7 +55,10 @@ class _TableManagementScreenState extends State<TableManagementScreen> {
                     labelText: l10n.table_label,
                     prefixIcon: const Icon(Icons.table_restaurant),
                   ),
-                  onChanged: (v) => setState(() => _selectedTable = v.isNotEmpty ? v : null),
+                  onChanged: (v) {
+                    final trimmed = v.trim();
+                    setState(() => _selectedTable = trimmed.isNotEmpty ? trimmed : null);
+                  },
                 ),
               ),
               const SizedBox(width: 8),
@@ -161,8 +167,8 @@ class _TableManagementScreenState extends State<TableManagementScreen> {
     );
   }
 
-  void _closeTable(String table, TableProvider tableProvider) {
-    tableProvider.closeTable(table);
+  Future<void> _closeTable(String table, TableProvider tableProvider) async {
+    await tableProvider.closeTable(table);
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('${AppLocalizations.of(context)!.table_label} $table')),

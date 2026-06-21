@@ -55,7 +55,7 @@ class PrintService {
     buf.writeln('║ ${l10n.receipt_employee}: ${sale.userNombre.padRight(16)}║');
     buf.writeln('║ $dateStr           ║');
     if (sale.tableId != null) {
-      buf.writeln('║ ${l10n.table_label}: ${sale.tableId!.padRight(20)}║');
+      buf.writeln('║ ${l10n.table_label}: ${_safeSubstring(sale.tableId!, 20).padRight(20)}║');
     }
     buf.writeln('╠══════════════════════════════╣');
 

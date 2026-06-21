@@ -110,6 +110,7 @@ class ProductProvider extends ChangeNotifier {
   }
 
   Future<void> incrementStockByName(String nombre, int cantidad) async {
+    if (cantidad <= 0) return;
     final index = _products.indexWhere(
       (p) => p.nombre == nombre && p.stock != null,
     );

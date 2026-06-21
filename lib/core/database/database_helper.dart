@@ -51,6 +51,9 @@ class DatabaseHelper {
       await db.execute('''
         ALTER TABLE sales ADD COLUMN table_id TEXT
       ''');
+      await db.execute('''
+        CREATE INDEX IF NOT EXISTS idx_sales_table_id ON sales(table_id)
+      ''');
     }
   }
 
@@ -81,6 +84,9 @@ class DatabaseHelper {
         exported_at TEXT,
         table_id TEXT
       )
+    ''');
+    await db.execute('''
+      CREATE INDEX IF NOT EXISTS idx_sales_table_id ON sales(table_id)
     ''');
 
     await db.execute('''
