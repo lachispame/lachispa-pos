@@ -9,5 +9,5 @@ class AppConstants {
   static const int wsReconnectAttempts = 3;
 
   static const String dbName = 'pos_lightning.db';
-  static const int dbVersion = 3;
+  static const int dbVersion = 4;
 }

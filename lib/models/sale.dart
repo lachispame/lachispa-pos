@@ -12,6 +12,7 @@ class Sale {
   final double rateUsado;
   final String? invoiceId;
   final String estado;
+  final String? tableId;
   final DateTime? exportedAt;
 
   Sale({
@@ -26,6 +27,7 @@ class Sale {
     required this.rateUsado,
     this.invoiceId,
     required this.estado,
+    this.tableId,
     this.exportedAt,
   });
 
@@ -41,6 +43,7 @@ class Sale {
       'rate_usado': rateUsado,
       'invoice_id': invoiceId,
       'estado': estado,
+      'table_id': tableId,
       'exported_at': exportedAt?.toIso8601String(),
     };
   }
@@ -58,6 +61,7 @@ class Sale {
       rateUsado: (map['rate_usado'] as num).toDouble(),
       invoiceId: map['invoice_id'] as String?,
       estado: map['estado'] as String,
+      tableId: map['table_id'] as String?,
       exportedAt: map['exported_at'] != null
           ? DateTime.parse(map['exported_at'] as String)
           : null,
@@ -89,6 +93,7 @@ class Sale {
     double? rateUsado,
     String? invoiceId,
     String? estado,
+    String? tableId,
     DateTime? exportedAt,
   }) {
     return Sale(
@@ -103,6 +108,7 @@ class Sale {
       rateUsado: rateUsado ?? this.rateUsado,
       invoiceId: invoiceId ?? this.invoiceId,
       estado: estado ?? this.estado,
+      tableId: tableId ?? this.tableId,
       exportedAt: exportedAt ?? this.exportedAt,
     );
   }

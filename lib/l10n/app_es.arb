@@ -294,5 +294,12 @@
   "about_tables_desc": "Organiza ventas por mesas",
   "about_stats_desc": "Gráficos, tendencias y productos top",
   "about_receipt_desc": "Comparte ticket tras cada venta",
-  "about_multilang_desc": "Disponible en 8 idiomas"
+  "about_multilang_desc": "Disponible en 8 idiomas",
+  "keep_table_open": "Dejar mesa abierta",
+  "saved": "Guardado",
+  "view_orders": "Ver pedidos",
+  "no_sales_history": "No hay ventas en el historial",
+  "sales": "ventas",
+  "pending_orders": "Pedidos pendientes",
+  "paid_orders": "Pedidos pagados"
 }

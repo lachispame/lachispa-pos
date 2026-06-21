@@ -47,6 +47,11 @@ class DatabaseHelper {
         ALTER TABLE products ADD COLUMN stock INTEGER
       ''');
     }
+    if (oldVersion < 4) {
+      await db.execute('''
+        ALTER TABLE sales ADD COLUMN table_id TEXT
+      ''');
+    }
   }
 
   Future<void> _createDB(Database db, int version) async {

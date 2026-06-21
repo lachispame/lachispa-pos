@@ -841,4 +841,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get about_multilang_desc => 'Available in 8 languages';
+
+  @override
+  String get keep_table_open => 'Keep table open';
+
+  @override
+  String get saved => 'Saved';
+
+  @override
+  String get view_orders => 'View orders';
+
+  @override
+  String get no_sales_history => 'No sales in history';
+
+  @override
+  String get sales => 'sales';
+
+  @override
+  String get pending_orders => 'Pending orders';
+
+  @override
+  String get paid_orders => 'Paid orders';
 }

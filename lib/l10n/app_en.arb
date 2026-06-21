@@ -294,5 +294,12 @@
   "about_tables_desc": "Organize sales by tables",
   "about_stats_desc": "Charts, trends and top products",
   "about_receipt_desc": "Share receipt after each sale",
-  "about_multilang_desc": "Available in 8 languages"
+  "about_multilang_desc": "Available in 8 languages",
+  "keep_table_open": "Keep table open",
+  "saved": "Saved",
+  "view_orders": "View orders",
+  "no_sales_history": "No sales in history",
+  "sales": "sales",
+  "pending_orders": "Pending orders",
+  "paid_orders": "Paid orders"
 }

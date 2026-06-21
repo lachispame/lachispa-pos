@@ -846,4 +846,25 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get about_multilang_desc => 'Доступно на 8 языках';
+
+  @override
+  String get keep_table_open => 'Dejar mesa abierta';
+
+  @override
+  String get saved => 'Guardado';
+
+  @override
+  String get view_orders => 'Ver pedidos';
+
+  @override
+  String get no_sales_history => 'No hay ventas en el historial';
+
+  @override
+  String get sales => 'ventas';
+
+  @override
+  String get pending_orders => 'Pedidos pendientes';
+
+  @override
+  String get paid_orders => 'Pedidos pagados';
 }

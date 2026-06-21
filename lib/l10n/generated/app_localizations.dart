@@ -1735,6 +1735,48 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Disponible en 8 idiomas'**
   String get about_multilang_desc;
+
+  /// No description provided for @keep_table_open.
+  ///
+  /// In es, this message translates to:
+  /// **'Dejar mesa abierta'**
+  String get keep_table_open;
+
+  /// No description provided for @saved.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardado'**
+  String get saved;
+
+  /// No description provided for @view_orders.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver pedidos'**
+  String get view_orders;
+
+  /// No description provided for @no_sales_history.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay ventas en el historial'**
+  String get no_sales_history;
+
+  /// No description provided for @sales.
+  ///
+  /// In es, this message translates to:
+  /// **'ventas'**
+  String get sales;
+
+  /// No description provided for @pending_orders.
+  ///
+  /// In es, this message translates to:
+  /// **'Pedidos pendientes'**
+  String get pending_orders;
+
+  /// No description provided for @paid_orders.
+  ///
+  /// In es, this message translates to:
+  /// **'Pedidos pagados'**
+  String get paid_orders;
 }
 
 class _AppLocalizationsDelegate
