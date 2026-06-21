@@ -132,15 +132,15 @@ class ProductProvider extends ChangeNotifier {
   }
 
   Future<void> exportCatalog() async {
-    final json = const JsonEncoder.withIndent('  ').convert(
-      _products.map((p) => {
+    final json = const JsonEncoder.withIndent('  ').convert({
+      'productos': _products.map((p) => {
         'nombre': p.nombre,
         'precio': p.precio,
         'moneda': p.moneda,
         'categoria': p.categoria,
         if (p.stock != null) 'stock': p.stock,
       }).toList(),
-    );
+    });
 
     final dir = await getTemporaryDirectory();
     final file = File('${dir.path}/catalogo_productos.json');
@@ -196,7 +196,8 @@ class ProductProvider extends ChangeNotifier {
     final file = File(path);
     try {
       return json.decode(await file.readAsString()) as Map<String, dynamic>;
-    } catch (_) {
+    } catch (e) {
+      debugPrint('pickCatalogJson error: $e');
       return null;
     }
   }
