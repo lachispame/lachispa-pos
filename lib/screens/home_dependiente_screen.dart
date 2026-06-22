@@ -134,7 +134,14 @@ class _HomeDependienteScreenState extends State<HomeDependienteScreen> {
     final productProvider = context.read<ProductProvider>();
 
     final data = await productProvider.pickCatalogJson();
-    if (data == null || !mounted) return;
+    if (data == null || !mounted) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.catalog_invalid_file), backgroundColor: Colors.red),
+        );
+      }
+      return;
+    }
 
     final productos = data['productos'] as List<dynamic>?;
     if (productos == null || productos.isEmpty) {

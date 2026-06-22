@@ -190,12 +190,14 @@ class ProductProvider extends ChangeNotifier {
     );
     if (result == null || result.files.isEmpty) return null;
 
-    final path = result.files.first.path;
-    if (path == null) return null;
-
-    final file = File(path);
     try {
-      return json.decode(await file.readAsString()) as Map<String, dynamic>;
+      final bytes = result.files.first.bytes;
+      if (bytes != null) {
+        return json.decode(utf8.decode(bytes)) as Map<String, dynamic>;
+      }
+      final path = result.files.first.path;
+      if (path == null) return null;
+      return json.decode(await File(path).readAsString()) as Map<String, dynamic>;
     } catch (e) {
       debugPrint('pickCatalogJson error: $e');
       return null;

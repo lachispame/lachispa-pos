@@ -324,7 +324,14 @@ class AppDrawer extends StatelessWidget {
     final productProvider = context.read<ProductProvider>();
 
     final data = await productProvider.pickCatalogJson();
-    if (data == null || !context.mounted) return;
+    if (data == null || !context.mounted) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.catalog_invalid_file), backgroundColor: Colors.red),
+        );
+      }
+      return;
+    }
 
     final productos = data['productos'] as List<dynamic>?;
     if (productos == null || productos.isEmpty) {
