@@ -140,8 +140,10 @@ class AppDrawer extends StatelessWidget {
                       title: l10n.drawer_import_catalog,
                       subtitle: l10n.drawer_import_catalog_subtitle,
                       onTap: () {
+                        final messenger = ScaffoldMessenger.of(context);
+                        final navigator = Navigator.of(context);
                         Navigator.pop(context);
-                        _importCatalog(context);
+                        _importCatalog(context, messenger, navigator);
                       },
                     ),
                     _DrawerItem(
@@ -319,56 +321,50 @@ class AppDrawer extends StatelessWidget {
     }
   }
 
-  Future<void> _importCatalog(BuildContext context) async {
+  Future<void> _importCatalog(BuildContext context, ScaffoldMessengerState messenger, NavigatorState navigator) async {
     final l10n = AppLocalizations.of(context)!;
     final productProvider = context.read<ProductProvider>();
 
     final data = await productProvider.pickCatalogJson();
-    if (data == null || !context.mounted) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.catalog_invalid_file), backgroundColor: Colors.red),
-        );
-      }
+    if (data == null) {
+      messenger.showSnackBar(
+        SnackBar(content: Text(l10n.catalog_invalid_file), backgroundColor: Colors.red),
+      );
       return;
     }
 
     final productos = data['productos'] as List<dynamic>?;
     if (productos == null || productos.isEmpty) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.catalog_invalid_file), backgroundColor: Colors.red),
-        );
-      }
+      messenger.showSnackBar(
+        SnackBar(content: Text(l10n.catalog_invalid_file), backgroundColor: Colors.red),
+      );
       return;
     }
 
-    if (context.mounted) {
-      final confirmed = await showDialog<bool>(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          backgroundColor: AppTheme.cardColor,
-          title: Text(l10n.catalog_import_title),
-          content: Text(l10n.catalog_import_confirm(productos.length)),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx, false),
-              child: Text(l10n.cancel_button),
-            ),
-            ElevatedButton(
-              onPressed: () => Navigator.pop(ctx, true),
-              child: Text(l10n.import_button),
-            ),
-          ],
-        ),
-      );
+    final confirmed = await showDialog<bool>(
+      context: navigator.context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: AppTheme.cardColor,
+        title: Text(l10n.catalog_import_title),
+        content: Text(l10n.catalog_import_confirm(productos.length)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: Text(l10n.cancel_button),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: Text(l10n.import_button),
+          ),
+        ],
+      ),
+    );
 
-      if (confirmed == true && context.mounted) {
-        final imported = await productProvider.importCatalogFromJson(data);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(l10n.catalog_imported(imported))),
-        );
-      }
+    if (confirmed == true) {
+      final imported = await productProvider.importCatalogFromJson(data);
+      messenger.showSnackBar(
+        SnackBar(content: Text(l10n.catalog_imported(imported))),
+      );
     }
   }
 
